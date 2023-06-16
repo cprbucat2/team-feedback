@@ -1,0 +1,21 @@
+name: PR Title Check
+on:
+  pull_request:
+    types: [edited, opened, reopened, synchronize]
+
+jobs:
+  title-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check PR title tag.
+      uses: Slashgear/action-check-pr-title@v4.3.0
+      with:
+        regexp: "^\\[(Breaking|Feature|Fix|Docs|Dev)\\] .+$"
+        helpMessage: >-
+          See .github/PULL_REQUEST_TEMPLATE/pull_request_template.md for
+          example titles.
+    - name: Check PR title length.
+      uses: Slashgear/action-check-pr-title@v4.3.0
+      with:
+        regexp: "^.{1,80}$"
+        helpMessage: "Title must be 80 characters or less."
