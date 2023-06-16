@@ -1,0 +1,6 @@
+# Set default behavior
+* text=auto
+
+*.go text eol=lf
+*.md text eol=lf
+
