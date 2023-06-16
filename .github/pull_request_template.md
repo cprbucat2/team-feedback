@@ -1,12 +1,10 @@
 <!--
-Add a valid tag and keep your PR title under 80 characters.
+PR titles must have a valid tag and be under 80 characters.
 Valid tags: [Breaking], [Feature], [Fix], [Docs], [Dev]
 Examples:
 [Feature] Add ability to control weather.
 [Dev] Test sprinkler.
 [Fix] Repair leak.
-========
-Don't forget to delete this^^
 -->
 
 ## Old behavior
