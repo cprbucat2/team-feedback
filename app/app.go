@@ -14,8 +14,13 @@ func main() {
 	router := gin.Default()
 
 	router.ForwardedByClientIP = true
-	router.SetTrustedProxies([]string{"127.0.0.1"})
+	if err := router.SetTrustedProxies([]string{"127.0.0.1"}); err != nil {
+		log.Fatalf("router.SetTrustedProxies: %v", err)
+	}
 
 	router.Static("/", "./www")
-	router.Run("0.0.0.0:8080")
+
+	if err := router.Run("0.0.0.0:8080"); err != nil {
+		log.Fatal(err)
+	}
 }
