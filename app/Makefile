@@ -1,4 +1,4 @@
-.PHONY: build run test clean tidy unittest
+.PHONY: build run tidy unittest vet fmt fmt-fix install-golangci lint test clean vendor
 
 VERSION := 0.0.0
 
@@ -7,8 +7,8 @@ GOTESTFLAGS ?= -race
 
 build: tf-server
 
-run:
-	go run .
+run: build
+	./tf-server
 
 tidy:
 	go mod tidy
@@ -22,11 +22,20 @@ unittest:
 vet:
 	go vet ./...
 
-lint:
+fmt:
 	gofmt -l $$(find . -type f -name '*.go' | grep -v "/vendor/")
-	[ "`gofmt -l $$(find . -type f -name '*.go' | grep -v "/vendor/")`" = "" ]
+	@[ "`gofmt -l $$(find . -type f -name '*.go' | grep -v "/vendor/")`" = "" ]
 
-test: lint vet unittest
+fmt-fix:
+	gofmt -w $$(find . -type f -name '*.go' | grep -v "/vendor/")
+
+install-golangci:
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1
+
+lint:
+	go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1 run
+
+test: vet fmt lint unittest
 
 clean:
 	rm -rf tf-server
