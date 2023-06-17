@@ -1,4 +1,4 @@
-.PHONY: build test clean tidy unittest
+.PHONY: build run test clean tidy unittest
 
 VERSION := 0.0.0
 
@@ -6,6 +6,9 @@ GOFLAGS = -ldflags "-X github.com/cprbucat2/team-feedback.Version=$(VERSION)" -t
 GOTESTFLAGS ?= -race
 
 build: tf-server
+
+run:
+	go run .
 
 tidy:
 	go mod tidy

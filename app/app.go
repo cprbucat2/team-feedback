@@ -9,7 +9,7 @@ import (
 func main() {
 	log.SetPrefix("tf-server: ")
 
-	log.Print("Connected to mysql.")
+	log.Print("Creating server.")
 
 	router := gin.Default()
 	router.Static("/", "./www")
