@@ -10,5 +10,5 @@ trim_trailing_whitespace = true
 indent_style = tab
 
 [*.yml]
-indent_sytle = space
+indent_style = space
 indent_size = 2
