@@ -1,4 +1,4 @@
-.PHONY: build run tidy unittest vet fmt fmt-fix install-golangci lint test clean vendor
+.PHONY: build run tidy unittest vet fmt fmt-fix install-golangci lint test clean vendor cover
 
 VERSION := 0.0.0
 
@@ -16,7 +16,7 @@ tidy:
 tf-server:
 	go build $(GOFLAGS) -o $@ .
 
-unittest:
+unittest coverage.out:
 	go test $(GOTESTFLAGS) -coverprofile=coverage.out ./...
 
 vet:
@@ -39,6 +39,11 @@ test: vet fmt lint unittest
 
 clean:
 	rm -rf tf-server
+	rm -rf coverage.out coverage.html
 
 vendor:
 	go mod vendor
+
+cover: coverage.html
+coverage.html: coverage.out
+	go tool cover -o $@ -html $<

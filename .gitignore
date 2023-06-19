@@ -15,6 +15,9 @@ app/tf-server
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# Coverage report
+app/coverage.html
+
 # Dependency directories (remove the comment below to include it)
 vendor/
 
