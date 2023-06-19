@@ -12,8 +12,9 @@ jobs:
       with:
         regexp: "^\\[(Breaking|Feature|Fix|Docs|Dev)\\] .+$"
         helpMessage: >-
-          See .github/PULL_REQUEST_TEMPLATE/pull_request_template.md for
-          example titles.
+          This PR does not have a valid title tag. Valid tags are [Breaking],
+          [Feature], [Fix], [Docs], and [Dev]. See the file
+          .github/pull_request_template.md for examples.
     - name: Check PR title length.
       uses: Slashgear/action-check-pr-title@v4.3.0
       with:
