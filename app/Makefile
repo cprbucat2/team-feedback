@@ -44,6 +44,8 @@ clean:
 vendor:
 	go mod vendor
 
-cover: coverage.html
+cover: coverage.out
+	go tool cover -func $<
+
 coverage.html: coverage.out
 	go tool cover -o $@ -html $<
