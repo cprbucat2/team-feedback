@@ -2,14 +2,16 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"html"
 	"io"
 	"log"
 	"os"
 	"path"
 
-	"golang.org/x/net/html"
+	xhtml "golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
 
@@ -18,33 +20,33 @@ var info *log.Logger
 var warning *log.Logger
 var errorLog *log.Logger
 
-func newTextNode(text string) *html.Node {
-	node := html.Node{
-		Type: html.TextNode,
+func newTextNode(text string) *xhtml.Node {
+	node := xhtml.Node{
+		Type: xhtml.TextNode,
 		Data: text,
 	}
 	return &node
 }
 
-func rewriteCSSLink(node *html.Node, file string) error {
+func rewriteCSSLink(node *xhtml.Node, file string) error {
 	var text string
 
 	if fh, err := os.Open(file); err == nil {
 		if buf, err := io.ReadAll(fh); err == nil {
 			text = string(buf)
 		} else {
-			warning.Print(err)
+			warning.Println(err)
 			return err
 		}
 	} else {
-		warning.Print(err)
+		warning.Println(err)
 		return err
 	}
 
 	newChild := newTextNode(text)
 	node.DataAtom = atom.Style
 	node.Data = "style"
-	newAttrs := []html.Attribute{}
+	newAttrs := []xhtml.Attribute{}
 	for _, at := range node.Attr {
 		if at.Key != "rel" && at.Key != "href" {
 			newAttrs = append(newAttrs, at)
@@ -56,12 +58,68 @@ func rewriteCSSLink(node *html.Node, file string) error {
 	return nil
 }
 
-func rewriteFaviconLink() {}
-func rewriteIMG()         {}
-func rewriteScript()      {}
+func rewriteScript() {}
 
-func crawler(n *html.Node, stem string, rewriteRules map[string]string) {
-	if n.Type == html.ElementNode && n.DataAtom == atom.Link {
+func imageText(file string) string {
+	if path.Ext(file) == ".svg" {
+		if handle, err := os.Open(file); err != nil {
+			warning.Println(err)
+		} else {
+			if buf, err := io.ReadAll(handle); err != nil {
+				warning.Println(err)
+			} else {
+				return "data:image/svg+xml," + html.EscapeString(string(buf))
+			}
+		}
+	} else if path.Ext(file) == ".png" {
+		if handle, err := os.Open(file); err != nil {
+			warning.Println(err)
+		} else {
+			if buf, err := io.ReadAll(handle); err != nil {
+				warning.Println(err)
+			} else {
+				return "data:image/png;base64," + html.EscapeString(base64.URLEncoding.EncodeToString(buf))
+			}
+		}
+	} else {
+		warning.Println("Unknown image extension for file ", file)
+	}
+	return ""
+}
+
+func rewriteFaviconLink(node *xhtml.Node, file string) {
+	for i := range node.Attr {
+		if node.Attr[i].Key == "href" {
+			node.Attr[i].Val = imageText(file)
+		} else if node.Attr[i].Key == "type" {
+			if path.Ext(file) == ".svg" {
+				node.Attr[i].Val = "image/svg+xml"
+			} else if path.Ext(file) == ".png" {
+				node.Attr[i].Val = "image/png"
+			}
+		}
+	}
+}
+
+func rewriteIMG(node *xhtml.Node, file string) {
+	for i := range node.Attr {
+		if node.Attr[i].Key == "src" {
+			node.Attr[i].Val = imageText(file)
+		}
+	}
+}
+
+func rewritePath(rewriteRules map[string]string, old string) string {
+	if href, ok := rewriteRules[old]; ok {
+		info.Printf("Rewriting %s -> %s.\n", old, href)
+		return href
+	} else {
+		return old
+	}
+}
+
+func crawler(n *xhtml.Node, stem string, rewriteRules map[string]string) bool {
+	if n.Type == xhtml.ElementNode && n.DataAtom == atom.Link {
 		var rel string
 		var href string
 		for _, attr := range n.Attr {
@@ -72,34 +130,45 @@ func crawler(n *html.Node, stem string, rewriteRules map[string]string) {
 				href = attr.Val
 			}
 		}
+
 		if rel == "stylesheet" {
 			info.Printf("Found a stylesheet <link> tag with href='%s'.\n", href)
-			if _, ok := rewriteRules[href]; ok {
-				info.Printf("Rewriting %s -> %s.\n", href, rewriteRules[href])
-				href = rewriteRules[href]
+
+			if newHref := rewritePath(rewriteRules, href); newHref != "" {
+				filePath := path.Join(stem, newHref)
+				debug.Printf("Calculated pathname: %v\n", filePath)
+				rewriteCSSLink(n, filePath)
+			} else {
+				return false
 			}
-
-			filePath := path.Join(stem, href)
-
-			debug.Printf("Calculated pathname: %v\n", filePath)
-			rewriteCSSLink(n, filePath)
-
 		} else if rel == "shortcut icon" {
 			info.Printf("Found a favicon <link> tag with href='%s'.\n", href)
-			if _, ok := rewriteRules[href]; ok {
-				info.Printf("Rewriting %s -> %s.\n", href, rewriteRules[href])
+
+			if newHref := rewritePath(rewriteRules, href); newHref != "" {
+				filePath := path.Join(stem, newHref)
+				debug.Printf("Calculated pathname: %v\n", filePath)
+				rewriteFaviconLink(n, filePath)
+			} else {
+				return false
 			}
-
-			filePath := path.Join(stem, href)
-
-			debug.Printf("Calculated pathname: %v\n", filePath)
 		}
-		return
+		return true
 	}
 
-	for child := n.FirstChild; child != nil; child = child.NextSibling {
-		crawler(child, stem, rewriteRules)
+	for child := n.FirstChild; child != nil; {
+		if !crawler(child, stem, rewriteRules) {
+			info.Printf("Removing <%s> element.\n", child.Data)
+			child = child.NextSibling
+			if child != nil {
+				n.RemoveChild(child.PrevSibling)
+			} else {
+				n.RemoveChild(n.LastChild)
+			}
+		} else {
+			child = child.NextSibling
+		}
 	}
+	return true
 }
 
 func main() {
@@ -125,7 +194,7 @@ func main() {
 	if err != nil {
 		errorLog.Fatal(err)
 	}
-	doc, err := html.Parse(file)
+	doc, err := xhtml.Parse(file)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
@@ -143,6 +212,6 @@ func main() {
 	// Output or write updated HTML.
 	var buffer bytes.Buffer
 	writer := io.Writer(&buffer)
-	html.Render(writer, doc)
+	xhtml.Render(writer, doc)
 	fmt.Println(buffer.String())
 }
