@@ -13,6 +13,11 @@ import (
 	"golang.org/x/net/html/atom"
 )
 
+var debug *log.Logger
+var info *log.Logger
+var warning *log.Logger
+var errorLog *log.Logger
+
 func newTextNode(text string) *html.Node {
 	node := html.Node{
 		Type: html.TextNode,
@@ -28,11 +33,11 @@ func rewriteCSSLink(node *html.Node, file string) error {
 		if buf, err := io.ReadAll(fh); err == nil {
 			text = string(buf)
 		} else {
-			log.Printf("WARNING: %v\n", err)
+			warning.Print(err)
 			return err
 		}
 	} else {
-		log.Printf("WARNING: %v\n", err)
+		warning.Print(err)
 		return err
 	}
 
@@ -68,26 +73,26 @@ func crawler(n *html.Node, stem string, rewriteRules map[string]string) {
 			}
 		}
 		if rel == "stylesheet" {
-			fmt.Printf("Found a stylesheet <link> tag with href='%s'.\n", href)
+			info.Printf("Found a stylesheet <link> tag with href='%s'.\n", href)
 			if _, ok := rewriteRules[href]; ok {
-				fmt.Printf("Rewriting %s -> %s.\n", href, rewriteRules[href])
+				info.Printf("Rewriting %s -> %s.\n", href, rewriteRules[href])
 				href = rewriteRules[href]
 			}
 
 			filePath := path.Join(stem, href)
 
-			fmt.Printf("Calculated pathname: %v\n", filePath)
+			debug.Printf("Calculated pathname: %v\n", filePath)
 			rewriteCSSLink(n, filePath)
 
 		} else if rel == "shortcut icon" {
-			fmt.Printf("Found a favicon <link> tag with href='%s'.\n", href)
+			info.Printf("Found a favicon <link> tag with href='%s'.\n", href)
 			if _, ok := rewriteRules[href]; ok {
-				fmt.Printf("Rewriting %s -> %s.\n", href, rewriteRules[href])
+				info.Printf("Rewriting %s -> %s.\n", href, rewriteRules[href])
 			}
 
 			filePath := path.Join(stem, href)
 
-			fmt.Printf("Calculated pathname: %v\n", filePath)
+			debug.Printf("Calculated pathname: %v\n", filePath)
 		}
 		return
 	}
@@ -103,6 +108,7 @@ func main() {
 	// TODO: Add option to specify working directory other than index html stem.
 	// TODO: Add -l, --list option to list external resources.
 	// TODO: Add -s, --dry-run to check which external resources are missing.
+	// TODO: Add log level option.
 	if len(os.Args) < 2 {
 		fmt.Printf("Usage: %s index.html\n", os.Args[0])
 		return
@@ -110,13 +116,18 @@ func main() {
 	rewrites := `{"favicon.ico": ""}`
 	wd := path.Dir(os.Args[1])
 
+	debug = log.New(io.Discard, "DEBUG: ", log.LstdFlags|log.Lmsgprefix)
+	info = log.New(io.Discard, "INFO: ", log.LstdFlags|log.Lmsgprefix)
+	warning = log.New(os.Stderr, "WARNING: ", log.LstdFlags|log.Lmsgprefix)
+	errorLog = log.New(os.Stderr, "ERROR: ", log.LstdFlags|log.Lmsgprefix)
+
 	file, err := os.Open(os.Args[1])
 	if err != nil {
-		log.Fatal(err)
+		errorLog.Fatal(err)
 	}
 	doc, err := html.Parse(file)
 	if err != nil {
-		log.Fatal(err)
+		errorLog.Fatal(err)
 	}
 
 	var rewriteRules map[string]string
