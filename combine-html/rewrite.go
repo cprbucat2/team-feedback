@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/base64"
+	"errors"
 	"html"
 	"io"
+	"log"
 	"os"
 	"path"
 	"strings"
@@ -11,6 +13,39 @@ import (
 	xhtml "golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
+
+var debug *log.Logger
+var info *log.Logger
+var warning *log.Logger
+var errorLog *log.Logger
+
+func LogDefault() {
+	debug = log.New(io.Discard, "DEBUG: ", log.LstdFlags|log.Lmsgprefix)
+	info = log.New(io.Discard, "INFO: ", log.LstdFlags|log.Lmsgprefix)
+	warning = log.New(os.Stderr, "WARNING: ", log.LstdFlags|log.Lmsgprefix)
+	errorLog = log.New(os.Stderr, "ERROR: ", log.LstdFlags|log.Lmsgprefix)
+}
+
+func LogLevel(level string) error {
+	LogDefault()
+	switch level {
+	case "debug":
+		debug.SetOutput(os.Stderr)
+		info.SetOutput(os.Stderr)
+	case "info":
+		info.SetOutput(os.Stderr)
+	case "warning":
+		// The default loglevel.
+	case "error":
+		warning.SetOutput(io.Discard)
+	case "none":
+		warning.SetOutput(io.Discard)
+		errorLog.SetOutput(io.Discard)
+	default:
+		return errors.New("invalid log level")
+	}
+	return nil
+}
 
 func newTextNode(text string) *xhtml.Node {
 	node := xhtml.Node{

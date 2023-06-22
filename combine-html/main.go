@@ -5,17 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 
 	xhtml "golang.org/x/net/html"
 )
-
-var debug *log.Logger
-var info *log.Logger
-var warning *log.Logger
-var errorLog *log.Logger
 
 func main() {
 	// TODO: Process argument to write in place.
@@ -32,10 +26,7 @@ func main() {
 	wd := path.Dir(os.Args[1])
 
 	// Setup loggers.
-	debug = log.New(io.Discard, "DEBUG: ", log.LstdFlags|log.Lmsgprefix)
-	info = log.New(io.Discard, "INFO: ", log.LstdFlags|log.Lmsgprefix)
-	warning = log.New(os.Stderr, "WARNING: ", log.LstdFlags|log.Lmsgprefix)
-	errorLog = log.New(os.Stderr, "ERROR: ", log.LstdFlags|log.Lmsgprefix)
+	LogDefault()
 
 	file, err := os.Open(os.Args[1])
 	if err != nil {
