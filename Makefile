@@ -15,29 +15,32 @@ SUBDIRS := app
 .PHONY: build-$(SUBDIRS) tidy-$(SUBDIRS) vet-$(SUBDIRS) lint-$(SUBDIRS) \
 	unittest-$(SUBDIRS) clean-$(SUBDIRS) vendor-$(SUBDIRS)
 
-build: build-$(SUBDIRS)
+build: $(SUBDIRS:%=build-%)
 
-build-$(SUBDIRS):
+$(SUBDIRS:%=build-%):
 	$(MAKE) -C $(@:build-%=%) build
 
 run-app: build-app
 	cd app && \
 	./tf-server
 
-tidy: tidy-$(SUBDIRS)
-tidy-$(SUBDIRS):
-	cd $(@:tidy-%=%) && go mod tidy
+tidy: $(SUBDIRS:%=tidy-%)
+$(SUBDIRS:%=tidy-%):
+	cd $(@:tidy-%=%) && $(GO) mod tidy
+	for package in $(SUBDIRS); do \
+		$(GO) get github.com/cprbucat2/team-feedback/$$package; \
+	done
 
-unittest: unittest-$(SUBDIRS)
+unittest: $(SUBDIRS:%=unittest-%)
 
-unittest-$(SUBDIRS) $(SUBDIRS)/coverage.out:
+$(SUBDIRS:%=unittest-%) $(SUBDIRS:%=%/coverage.out):
 	{ [ "$@" = "unittest-$(@:unittest-%=%)" ] && cd $(@:unittest-%=%) || \
 	 cd $(@:%/coverage.out=%); } && \
 	$(GO) test $(GOTESTFLAGS) -coverprofile=coverage.out .
 
-vet: vet-$(SUBDIRS)
-vet-$(SUBDIRS):
-	cd $(@:vet-%=%) && go vet
+vet: $(SUBDIRS:%=vet-%)
+$(SUBDIRS:%=vet-%):
+	cd $(@:vet-%=%) && $(GO) vet .
 
 fmt:
 	gofmt -l $$(find . -type f -name '*.go' | grep -vF "/vendor/")
@@ -49,23 +52,24 @@ fmt-fix:
 install-golangci:
 	$(GO) install github.com/golangci/golangci-lint/cmd/golangci-lint@v1
 
-lint: lint-$(SUBDIRS)
-lint-$(SUBDIRS):
+lint: $(SUBDIRS:%=lint-%)
+$(SUBDIRS:%=lint-%):
 	cd $(@:lint-%=%) && \
 	$$($(GO) env GOPATH)/bin/golangci-lint run
 
 test: vet fmt lint unittest
 
-clean: clean-$(SUBDIRS)
+clean: $(SUBDIRS:%=clean-%)
 
-clean-$(SUBDIRS):
+$(SUBDIRS:%=clean-%):
 	$(MAKE) -C $(@:clean-%=%) clean
 
-vendor: vendor-$(SUBDIRS)
+vendor: $(SUBDIRS:%=vendor-%)
+$(SUBDIRS:%=vendor-%):
 	cd $(@:vendor-%=%) && $(GO) mod vendor
 
-cover: $(SUBDIRS)/coverage.out
-	go tool cover -func=$<
+cover: $(SUBDIRS:%=%/coverage.out)
+	$(GO) tool cover $(SUBDIRS:%=-func=%/coverage.out)
 
-coverage.html: coverage.out
-	go tool cover -o $@ -html $<
+coverage.html: $(SUBDIRS:%=%/coverage.out)
+	$(GO) tool cover -o $@ $(SUBDIRS:%=-html=%/coverage.out)

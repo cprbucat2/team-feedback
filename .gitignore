@@ -16,7 +16,7 @@ app/tf-server
 *.out
 
 # Coverage report
-app/coverage.html
+coverage.html
 
 # Dependency directories (remove the comment below to include it)
 vendor/
