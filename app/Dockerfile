@@ -13,15 +13,16 @@ COPY LICENSE LICENSE
 RUN make build
 
 # Run stage
-FROM alpine:latest
+FROM scratch as server
 
-RUN apk --no-cache add ca-certificates
+# Get latest CA certificates
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 COPY --from=builder /app/LICENSE /LICENSE
 COPY --from=builder /app/tf-server /tf-server
 COPY --from=builder /app/www /www
 
-ENTRYPOINT /tf-server
+CMD [ "/tf-server" ]
 
 LABEL Name=team-feedback Version=0.0.0
 EXPOSE 8080
