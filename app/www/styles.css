@@ -1,10 +1,26 @@
-.course-title {
+.course__title {
 	font-size: 2em;
 	margin-bottom: 0;
+	text-align: center;
 }
 
-.course-subtitle {
+.course__subtitle {
 	margin-top: 0;
+	text-align: center;
+}
+
+.course__description {
+	margin-top: 0;
+}
+
+.feedback-data__title {
+	text-align: center;
+	font-weight: bold;
+}
+
+.feedback-comments__title {
+	text-align: center;
+	font-weight: bold;
 }
 
 .text-center {
@@ -29,22 +45,33 @@
 	background-color: #d2d2d2;
 }
 
+.feedback-data__header {
+	font-weight: bold;
+	text-align: center;
+	background-color: #d2d2d2;
+}
+
 .ratings-table__colavg {
 	font-weight: bold;
 	text-align: center;
 	background-color: #929292;
 }
 
-.flex-container {
+.feedback-comments__flex-container {
 	display: flex;
 	flex-direction: column;
 	background-color: #000000;
 }
 
-.flex-container > div {
+.feedback-comments__flex-container > div {
 	background-color: #f1f1f1;
 	margin: 0.5px;
 	padding: 0.5px;
+}
+
+.feedback-comments__caption {
+	text-decoration: underline;
+	font-weight: bold;
 }
 
 section {
@@ -96,6 +123,16 @@ table {
 	width: 100%;
 	box-sizing: border-box;
 
+}
+
+.feedback-comments__text {
+	resize: none;
+	outline: none;
+	border: none;
+	margin: 0px;
+	width: 100%;
+	box-sizing: border-box;
+	height: 1em*4;
 }
 
 .textarea2 {
