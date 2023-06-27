@@ -50,10 +50,15 @@ jobs:
         with:
           go-version-file: app/go.mod
           cache-dependency-path: app/go.sum
-      - uses: golangci/golangci-lint-action@v3
+      - run: make install-golangci
+      - name: Cache golangci
+        uses: actions/cache@v1
         with:
-          version: latest
-          working-directory: app
+          path: ${{ github.workspace }}/.golangci-cache
+          key: golangci-${{ hashFiles('**/go.mod') }}
+      - run: make lint
+        env:
+          GOLANGCI_LINT_CACHE: ${{ github.workspace }}/.golangci-cache
   unittest:
     runs-on: ubuntu-latest
     steps:
