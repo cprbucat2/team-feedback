@@ -53,11 +53,11 @@ jobs:
       - name: Cache golangci
         uses: actions/cache@v1
         with:
-          path: ~/.golangci-cache
+          path: ${{ github.workspace }}/.golangci-cache
           key: golangci-${{ hashFiles('**/go.mod') }}
       - run: make lint
         env:
-          GOLANGCI_LINT_CACHE: ~/.golangci-cache
+          GOLANGCI_LINT_CACHE: ${{ github.workspace }}/.golangci-cache
   unittest:
     runs-on: ubuntu-latest
     steps:
