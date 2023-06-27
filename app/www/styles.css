@@ -33,12 +33,15 @@
 	background-color: #f1f1f1;
 	text-align: right;
 	padding-right: 0.25%;
-	width: 10%
+	width: 10%;
+	border: 0px;
 }
 
 .feedback-comments__table-category-description {
 	background-color: #f1f1f1;
 	padding-left: 0.25%;
+	border: 0px;
+	border-left: 1px solid black;
 }
 
 .text-center {
