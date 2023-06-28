@@ -22,7 +22,7 @@ COPY --from=builder /app/LICENSE /LICENSE
 COPY --from=builder /app/tf-server /tf-server
 COPY --from=builder /app/www /www
 
-CMD [ "/tf-server" ]
+EXPOSE 8080
+ENTRYPOINT [ "/tf-server" ]
 
 LABEL Name=team-feedback Version=0.0.0
-EXPOSE 8080
