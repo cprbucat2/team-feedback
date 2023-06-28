@@ -31,3 +31,6 @@ go.work
 
 # Editor environments
 .vscode/
+
+# Linter cache
+.golangci-cache/
