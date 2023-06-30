@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="styles.css">
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <title>Document</title>
+	<script src="collect.js"></script>
 </head>
 <body>
 	<div class="course">
@@ -41,31 +42,31 @@
 			<th class="feedback-data__header">Average</th>
 			</tr>
 			<tr>
-			<td class="feedback-data__row-name">Group Member 1</td>
+			<td class="feedback-data__row-name" id="gm1">Group Member 1</td>
 			<td><textarea class="feedback-data__cell" id="participation_1" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="collaboration_1" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="contribution_1" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="attitude_1" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="goals_1" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td><textarea class="feedback-data__cell" id="average_1" rows="1" cols="10" maxlength="10"></textarea></td>
+			<td class="feedback-data__row-avg" id="rowavg1">1</td>
 			</tr>
 			<tr>
-			<td class="feedback-data__row-name">Group Member 2</td>
+			<td class="feedback-data__row-name" id="gm2">Group Member 2</td>
 			<td><textarea class="feedback-data__cell" id="participation_2" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="collaboration_2" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="contribution_2" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="attitude_2" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="goals_2" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td><textarea class="feedback-data__cell" id="average_2" rows="1" cols="10" maxlength="10"></textarea></td>
+			<td class="feedback-data__row-avg" id="rowavg2">1</td>
 			</tr>
 			<tr>
-			<td class="feedback-data__row-name">Group Member 3</td>
+			<td class="feedback-data__row-name" >Group Member 3</td>
 			<td><textarea class="feedback-data__cell" id="participation_3" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="collaboration_3" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="contribution_3" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="attitude_3" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="goals_3" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td><textarea class="feedback-data__cell" id="average_3" rows="1" cols="10" maxlength="10"></textarea></td>
+			<td class="feedback-data__row-avg" id="rowavg3">1</td>
 			</tr>
 			<tr>
 			<td class="feedback-data__row-name">Group Member 4</td>
@@ -74,7 +75,7 @@
 			<td><textarea class="feedback-data__cell" id="contribution_4" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="attitude_4" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="goals_4" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td><textarea class="textarea1" id="average_4" rows="1" cols="10" maxlength="10"></textarea></td>
+			<td class="feedback-data__row-avg" id="rowavg4">1</td>
 			</tr>
 			<tr>
 			<td class="feedback-data__row-name">Group Member 5</td>
@@ -83,7 +84,7 @@
 			<td><textarea class="feedback-data__cell" id="contribution_5" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="attitude_5" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="goals_5" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td><textarea class="feedback-data__cell" id="average_5" rows="1" cols="10" maxlength="10"></textarea></td>
+			<td class="feedback-data__row-avg" id="rowavg5">1</td>
 			</tr>
 			<tr>
 			<td class="feedback-data__row-name">Group Member 6</td>
@@ -92,7 +93,7 @@
 			<td><textarea class="feedback-data__cell" id="contribution_6" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="attitude_6" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td><textarea class="feedback-data__cell" id="goals_6" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td><textarea class="feedback-data__cell" id="average_6" rows="1" cols="10" maxlength="10"></textarea></td>
+			<td class="feedback-data__row-avg" id="rowavg6">1</td>
 			</tr>
 			<tr class="feedback-data__colavg">
 				<td>Column Averages</td>
@@ -177,5 +178,14 @@
 			</tr>
 		</table>
 	</div>
+	<div class="form-submission">
+		<br>
+		<input type="submit" class="text-center"id="submit" value="Submit Form" onclick="submit_form()" style="height:40px;width:150px;font-size:20px" />
+		<br><br>
+		<div id="successful_submit" style="color: rgb(126, 0, 0);"></div>
+		<br>
+	</div>
 </body>
 </html>
+
+
