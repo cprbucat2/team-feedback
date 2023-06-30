@@ -10,7 +10,7 @@ RUN go mod download && go mod verify
 
 COPY app .
 COPY LICENSE LICENSE
-RUN make build
+RUN make -B build
 
 # Run stage
 FROM scratch as server
