@@ -16,6 +16,9 @@ combine-html/combine-html
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# Coverage report
+coverage.html
+
 # Dependency directories (remove the comment below to include it)
 vendor/
 
@@ -29,3 +32,6 @@ go.work
 
 # Editor environments
 .vscode/
+
+# Linter cache
+.golangci-cache/

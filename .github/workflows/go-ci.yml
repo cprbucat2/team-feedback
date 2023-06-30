@@ -1,0 +1,73 @@
+name: Go CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    paths:
+    - .github/workflows/go-ci.yml
+    - "**/*.go"
+    - "**/go.{mod,sum}"
+    - "**/Makefile"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - run: make build
+  vet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - run: make vet
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - run: make fmt
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - run: make install-golangci
+      - name: Cache golangci
+        uses: actions/cache@v1
+        with:
+          path: ${{ github.workspace }}/.golangci-cache
+          key: golangci-${{ hashFiles('**/go.mod') }}
+      - run: make lint
+        env:
+          GOLANGCI_LINT_CACHE: ${{ github.workspace }}/.golangci-cache
+  unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - run: make unittest
+      - run: make cover
+      - run: make coverage.html
+      - name: Archive code coverage report.
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: coverage.html

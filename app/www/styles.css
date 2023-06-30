@@ -1,3 +1,146 @@
-.course-title {
-    text-align: center;
+.course__title {
+	font-size: 2em;
+	margin-bottom: 0;
+	text-align: center;
+}
+
+.course__subtitle {
+	margin-top: 0;
+	text-align: center;
+}
+
+.course__description {
+	margin-top: 0;
+}
+
+.feedback-data__title {
+	text-align: center;
+	font-weight: bold;
+}
+
+.feedback-comments__title {
+	text-align: center;
+	font-weight: bold;
+}
+
+.feedback-comments__table-header {
+	text-align: center;
+	background-color: #f1f1f1;
+}
+
+.feedback-comments__table-categories {
+	font-weight: bold;
+	background-color: #f1f1f1;
+	text-align: right;
+	padding-right: 0.25%;
+	width: 10%;
+	border: 0px;
+}
+
+.feedback-comments__table-category-description {
+	background-color: #f1f1f1;
+	padding-left: 0.25%;
+	border: 0px;
+	border-left: 1px solid black;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.text-bold {
+	font-weight: bold;
+}
+
+.text-underline {
+	text-decoration: underline;
+}
+
+.ratings-table__col1 {
+	font-weight: bold;
+	text-align: center;
+	background-color: #d2d2d2;
+}
+
+.feedback-data__header {
+	font-weight: bold;
+	text-align: center;
+	background-color: #d2d2d2;
+}
+
+.feedback-data__colavg {
+	font-weight: bold;
+	text-align: center;
+	background-color: #929292;
+}
+
+.feedback-data__cell {
+	resize: none;
+	outline: none;
+	border: none;
+	margin: 0px;
+	width: 100%;
+	box-sizing: border-box;
+
+	text-align: right;
+}
+
+.feedback-comments__caption {
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+td {
+	border: 1px solid;
+	padding-left: 5px;
+}
+
+th {
+	border: 1px solid;
+}
+
+table {
+	border: 1px solid;
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.feedback-data__score-table {
+	border: 1px solid;
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.textarea1 {
+	resize: none;
+	outline: none;
+	border: none;
+	margin: 0px;
+	width: 100%;
+	box-sizing: border-box;
+
+}
+
+.feedback-comments__text {
+	resize: none;
+	outline: none;
+	border: none;
+	margin: 0px;
+	width: 100%;
+	box-sizing: border-box;
+	height: 1em*4;
+}
+
+.feedback-comments__member-comments {
+	font-weight: bold;
+	resize: none;
+	outline: none;
+	border: none;
+	margin: 0px;
+	width: 100%;
+	box-sizing: border-box;
 }
