@@ -9,7 +9,7 @@ export GOBUILDFLAGS += -trimpath -mod=readonly \
 
 GOTESTFLAGS ?= -race
 
-SUBDIRS := app
+SUBDIRS := app combine-html
 
 .PHONY: $(SUBDIRS)
 .PHONY: build-$(SUBDIRS) tidy-$(SUBDIRS) vet-$(SUBDIRS) lint-$(SUBDIRS) \
