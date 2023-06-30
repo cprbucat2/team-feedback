@@ -62,11 +62,9 @@ func rewriteCSSLink(node *xhtml.Node, file string) error {
 		if buf, err := io.ReadAll(fh); err == nil {
 			text = string(buf)
 		} else {
-			warning.Println(err)
 			return err
 		}
 	} else {
-		warning.Println(err)
 		return err
 	}
 
@@ -92,11 +90,9 @@ func rewriteScript(node *xhtml.Node, file string) error {
 		if buf, err := io.ReadAll(fh); err == nil {
 			text = string(buf)
 		} else {
-			warning.Println(err)
 			return err
 		}
 	} else {
-		warning.Println(err)
 		return err
 	}
 
@@ -259,9 +255,13 @@ func RewriteCrawler(node *xhtml.Node, stem string, rewriteRules map[string]strin
 
 			switch elemtype {
 			case styleTag:
-				rewriteCSSLink(node, filepath)
+				if err := rewriteCSSLink(node, filepath); err != nil {
+					warning.Println(err)
+				}
 			case scriptTag:
-				rewriteScript(node, filepath)
+				if err := rewriteScript(node, filepath); err != nil {
+					warning.Println(err)
+				}
 			case faviconTag:
 				rewriteFaviconLink(node, filepath)
 			case imgTag:

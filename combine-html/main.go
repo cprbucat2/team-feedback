@@ -38,7 +38,9 @@ func main() {
 	}
 
 	var rewriteRules map[string]string
-	json.Unmarshal([]byte(rewrites), &rewriteRules)
+	if err := json.Unmarshal([]byte(rewrites), &rewriteRules); err != nil {
+		errorLog.Fatal(err)
+	}
 
 	// Get and rewrite HTML tree.
 	RewriteCrawler(doc, wd, rewriteRules)
@@ -46,6 +48,8 @@ func main() {
 	// Output or write updated HTML.
 	var buffer bytes.Buffer
 	writer := io.Writer(&buffer)
-	xhtml.Render(writer, doc)
+	if err := xhtml.Render(writer, doc); err != nil {
+		errorLog.Fatal(err)
+	}
 	fmt.Println(buffer.String())
 }
