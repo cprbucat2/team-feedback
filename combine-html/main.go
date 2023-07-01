@@ -13,9 +13,8 @@ import (
 )
 
 func main() {
-	// TODO: Add option to specify working directory other than index html stem.
 	var help, version, listOnly, checkOnly bool
-	var outFile, logLevel, rewrites, rewriteFile string
+	var outFile, logLevel, rewrites, rewriteFile, wd string
 
 	flagset := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	flagset.Usage = func() {
@@ -36,6 +35,7 @@ or empty string "".`)
 	flagset.StringVar(&logLevel, "loglevel", "warning", "Log level: debug, info, warning, error, none.")
 	flagset.StringVar(&rewrites, "r", "{}", "Rewrite rules: A JSON encoded map of rewrite rules.")
 	flagset.StringVar(&rewriteFile, "f", "", "Rewrite rule file: A JSON file to read rules from.")
+	flagset.StringVar(&wd, "wd", "", "Working directory. Defaults to index.html path.")
 
 	if err := flagset.Parse(os.Args[1:]); err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -66,7 +66,9 @@ or empty string "".`)
 		flagset.Usage()
 		os.Exit(2)
 	}
-	wd := path.Dir(flagset.Arg(0))
+	if wd == "" {
+		wd = path.Dir(flagset.Arg(0))
+	}
 
 	file, err := os.Open(flagset.Arg(0))
 	if err != nil {
