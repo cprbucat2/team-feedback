@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"html"
 	"io"
 	"log"
@@ -55,7 +56,7 @@ func newTextNode(text string) *xhtml.Node {
 	return &node
 }
 
-func rewriteCSSLink(node *xhtml.Node, file string) error {
+func rewriteCSSLink(node *xhtml.Node, file string, checkOnly bool) error {
 	var text string
 
 	if fh, err := os.Open(file); err == nil {
@@ -68,22 +69,24 @@ func rewriteCSSLink(node *xhtml.Node, file string) error {
 		return err
 	}
 
-	newChild := newTextNode(text)
-	node.DataAtom = atom.Style
-	node.Data = "style"
-	newAttrs := []xhtml.Attribute{}
-	for _, at := range node.Attr {
-		if at.Key != "rel" && at.Key != "href" {
-			newAttrs = append(newAttrs, at)
+	if !checkOnly {
+		newChild := newTextNode(text)
+		node.DataAtom = atom.Style
+		node.Data = "style"
+		newAttrs := []xhtml.Attribute{}
+		for _, at := range node.Attr {
+			if at.Key != "rel" && at.Key != "href" {
+				newAttrs = append(newAttrs, at)
+			}
 		}
+		node.Attr = newAttrs
+		node.AppendChild(newChild)
 	}
-	node.Attr = newAttrs
-	node.AppendChild(newChild)
 
 	return nil
 }
 
-func rewriteScript(node *xhtml.Node, file string) error {
+func rewriteScript(node *xhtml.Node, file string, checkOnly bool) error {
 	var text string
 
 	if fh, err := os.Open(file); err == nil {
@@ -96,15 +99,17 @@ func rewriteScript(node *xhtml.Node, file string) error {
 		return err
 	}
 
-	newChild := newTextNode(text)
-	newAttrs := []xhtml.Attribute{}
-	for _, at := range node.Attr {
-		if at.Key != "src" {
-			newAttrs = append(newAttrs, at)
+	if !checkOnly {
+		newChild := newTextNode(text)
+		newAttrs := []xhtml.Attribute{}
+		for _, at := range node.Attr {
+			if at.Key != "src" {
+				newAttrs = append(newAttrs, at)
+			}
 		}
+		node.Attr = newAttrs
+		node.AppendChild(newChild)
 	}
-	node.Attr = newAttrs
-	node.AppendChild(newChild)
 
 	return nil
 }
@@ -141,27 +146,35 @@ func imageText(file string) string {
 
 // rewrteFaviconLink replaces the href attribute of a Link node with a data URI
 // of file. It also modifies node's type attribute to match file's type.
-func rewriteFaviconLink(node *xhtml.Node, file string) {
-	for i := range node.Attr {
-		if node.Attr[i].Key == "href" {
-			node.Attr[i].Val = imageText(file)
-		} else if node.Attr[i].Key == "type" {
-			if path.Ext(file) == ".svg" {
-				node.Attr[i].Val = "image/svg+xml"
-			} else if path.Ext(file) == ".png" {
-				node.Attr[i].Val = "image/png"
+func rewriteFaviconLink(node *xhtml.Node, file string, checkOnly bool) {
+	if !checkOnly {
+		for i := range node.Attr {
+			if node.Attr[i].Key == "href" {
+				node.Attr[i].Val = imageText(file)
+			} else if node.Attr[i].Key == "type" {
+				if path.Ext(file) == ".svg" {
+					node.Attr[i].Val = "image/svg+xml"
+				} else if path.Ext(file) == ".png" {
+					node.Attr[i].Val = "image/png"
+				}
 			}
 		}
+	} else {
+		imageText(file)
 	}
 }
 
 // rewriteIMG replaces the src attribute of node with the data URI of file
 // contents as output by imageText.
-func rewriteIMG(node *xhtml.Node, file string) {
-	for i := range node.Attr {
-		if node.Attr[i].Key == "src" {
-			node.Attr[i].Val = imageText(file)
+func rewriteIMG(node *xhtml.Node, file string, checkOnly bool) {
+	if !checkOnly {
+		for i := range node.Attr {
+			if node.Attr[i].Key == "src" {
+				node.Attr[i].Val = imageText(file)
+			}
 		}
+	} else {
+		imageText(file)
 	}
 }
 
@@ -241,7 +254,7 @@ func parseElement(node *xhtml.Node) (elemtype elemType, source string) {
 
 // crawler recursively searches the HTML document for internal resources. It
 // returns false if node should be removed and true otherwise.
-func RewriteCrawler(node *xhtml.Node, stem string, rewriteRules map[string]string) bool {
+func RewriteCrawler(node *xhtml.Node, stem string, rewriteRules map[string]string, checkOnly bool) bool {
 	// Skip checking non-element nodes.
 	if node.Type == xhtml.ElementNode {
 		if elemtype, source := parseElement(node); elemtype != noneTag {
@@ -255,17 +268,17 @@ func RewriteCrawler(node *xhtml.Node, stem string, rewriteRules map[string]strin
 
 			switch elemtype {
 			case styleTag:
-				if err := rewriteCSSLink(node, filepath); err != nil {
+				if err := rewriteCSSLink(node, filepath, checkOnly); err != nil {
 					warning.Println(err)
 				}
 			case scriptTag:
-				if err := rewriteScript(node, filepath); err != nil {
+				if err := rewriteScript(node, filepath, checkOnly); err != nil {
 					warning.Println(err)
 				}
 			case faviconTag:
-				rewriteFaviconLink(node, filepath)
+				rewriteFaviconLink(node, filepath, checkOnly)
 			case imgTag:
-				rewriteIMG(node, filepath)
+				rewriteIMG(node, filepath, checkOnly)
 			}
 
 			return true
@@ -274,7 +287,7 @@ func RewriteCrawler(node *xhtml.Node, stem string, rewriteRules map[string]strin
 
 	for child := node.FirstChild; child != nil; {
 		// Skip non-element child nodes and remove child if crawler returns false.
-		if child.Type == xhtml.ElementNode && !RewriteCrawler(child, stem, rewriteRules) {
+		if child.Type == xhtml.ElementNode && !RewriteCrawler(child, stem, rewriteRules, checkOnly) {
 			info.Printf("Removing <%s> element.\n", child.Data)
 			child = child.NextSibling
 			if child != nil {
@@ -287,4 +300,23 @@ func RewriteCrawler(node *xhtml.Node, stem string, rewriteRules map[string]strin
 		}
 	}
 	return true
+}
+
+func rewriteListHelper(node *xhtml.Node, res *[]string) {
+	if node.Type == xhtml.ElementNode {
+		if elemtype, source := parseElement(node); elemtype != noneTag {
+			str := fmt.Sprintf("Found a %s element with source='%s'.\n", elemTypeString(elemtype), source)
+			*res = append(*res, str)
+		}
+	}
+
+	for child := node.FirstChild; child != nil; child = child.NextSibling {
+		rewriteListHelper(child, res)
+	}
+}
+func RewriteCrawlList(node *xhtml.Node) []string {
+	// Skip checking non-element nodes.
+	result := make([]string, 0)
+	rewriteListHelper(node, &result)
+	return result
 }

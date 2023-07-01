@@ -1,30 +1,21 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
 	"os"
 	"path"
+	"strings"
 
 	xhtml "golang.org/x/net/html"
 )
 
 func main() {
-	// TODO: Process argument to write in place.
-	// TODO: Process argument comtaining source rewrites -- FILE or text.
 	// TODO: Add option to specify working directory other than index html stem.
-	// TODO: Add -l, --list option to list external resources.
-	// TODO: Add -s, --dry-run to check which external resources are missing.
-	// TODO: Add log level option.
-	var listOnly bool
-	var checkOnly bool
-	var outFile string
-	var logLevel string
-	var rewrites string
-	var rewriteFile string
+	var help, version, listOnly, checkOnly bool
+	var outFile, logLevel, rewrites, rewriteFile string
 
 	flagset := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	flagset.Usage = func() {
@@ -37,23 +28,45 @@ with -f. Rules given with -f are read first and overridden by rules given with
 They should be provided as a JSON object mapping each URI/href to a local file
 or empty string "".`)
 	}
-	flagset.BoolVar(&listOnly, "l", false, "List mode: print internal resources and exit.")
-	flagset.BoolVar(&checkOnly, "c", false, "Check run: print errors without rewriting and exit.")
-	flagset.StringVar(&outFile, "i", "-", "Output file: - represents stdout. File is overwritten.")
+	flagset.BoolVar(&help, "help", false, "Print this help text and exit.")
+	flagset.BoolVar(&version, "version", false, "Print version and exit.")
+	flagset.BoolVar(&listOnly, "list", false, "List mode: print internal resources and exit.")
+	flagset.BoolVar(&checkOnly, "check", false, "Check run: print errors without rewriting and exit.")
+	flagset.StringVar(&outFile, "o", "-", "Output file: - represents stdout. File is overwritten.")
 	flagset.StringVar(&logLevel, "loglevel", "warning", "Log level: debug, info, warning, error, none.")
 	flagset.StringVar(&rewrites, "r", "{}", "Rewrite rules: A JSON encoded map of rewrite rules.")
 	flagset.StringVar(&rewriteFile, "f", "", "Rewrite rule file: A JSON file to read rules from.")
 
-	flagset.Parse(os.Args[1:])
+	if err := flagset.Parse(os.Args[1:]); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(2)
+	}
+
+	// Setup loggers.
+	if err := LogLevel(logLevel); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	names := make([]string, 0)
+	flagset.Visit(func(flag *flag.Flag) {
+		names = append(names, fmt.Sprintf("%s=%s", flag.Name, flag.Value.String()))
+	})
+	debug.Printf("Flags given: %s\n", strings.Join(names, ", "))
+
+	if help {
+		flagset.Usage()
+		os.Exit(0)
+	} else if version {
+		fmt.Println("0.0.0")
+		os.Exit(0)
+	}
 
 	if flagset.NArg() < 1 {
 		flagset.Usage()
 		os.Exit(2)
 	}
 	wd := path.Dir(flagset.Arg(0))
-
-	// Setup loggers.
-	LogLevel(logLevel)
 
 	file, err := os.Open(flagset.Arg(0))
 	if err != nil {
@@ -64,7 +77,15 @@ or empty string "".`)
 		errorLog.Fatal(err)
 	}
 
-	var rewriteRules map[string]string
+	if listOnly {
+		resources := RewriteCrawlList(doc)
+		for _, resource := range resources {
+			fmt.Print(resource)
+		}
+		os.Exit(0)
+	}
+
+	rewriteRules := make(map[string]string)
 	if rewriteFile != "" {
 		if file, err := os.Open(rewriteFile); err != nil {
 			errorLog.Fatal(err)
@@ -88,14 +109,6 @@ or empty string "".`)
 		}
 	}
 
-	if listOnly {
-		resources := RewriteCrawlList()
-		for resource := range resources {
-			fmt.Println(resource)
-		}
-		os.Exit(0)
-	}
-
 	// Get and rewrite HTML tree.
 	RewriteCrawler(doc, wd, rewriteRules, checkOnly)
 	if checkOnly {
@@ -103,10 +116,15 @@ or empty string "".`)
 	}
 
 	// Output or write updated HTML.
-	var buffer bytes.Buffer
-	writer := io.Writer(&buffer)
+	var writer io.Writer
+	if outFile == "-" {
+		writer = os.Stdout
+	} else if writer, err = os.Create(outFile); err != nil {
+		errorLog.Fatal(err)
+	}
+
 	if err := xhtml.Render(writer, doc); err != nil {
 		errorLog.Fatal(err)
 	}
-	fmt.Println(buffer.String())
+	fmt.Fprintln(writer)
 }

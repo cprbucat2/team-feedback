@@ -17,7 +17,7 @@ func TestRewriteCSSLink(t *testing.T) {
 
 	linkNode := doc.FirstChild.FirstChild.FirstChild
 
-	if err := rewriteCSSLink(linkNode, "./rewrite_test-styles.css"); err != nil {
+	if err := rewriteCSSLink(linkNode, "./rewrite_test-styles.css", false); err != nil {
 		t.Error(err)
 	}
 	var buf bytes.Buffer
