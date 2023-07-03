@@ -13,15 +13,16 @@ create table members (
 
 create table membersubmissions (
 	ID int auto_increment not null,
+	UUID binary(16) not null, -- A uuid_to_bin encoded uuid.
 	Author int not null,
-	Submissions varchar(2400) not null, -- A list of up to 100 base64 encoded UUIDs to submissions.
+	Submissions varchar(255) not null, -- A list of submission IDs.
 	Improvement varchar(255) not null,
 	primary key (ID)
 );
 
 create table submissions (
 	ID int auto_increment not null,
-	UUID char(24) not null, -- A base64 encoded UUID.
+	Member int not null,
 	Participation float not null,
 	Collaboration float not null,
 	Contribution float not null,

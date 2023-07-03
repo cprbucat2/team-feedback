@@ -1,17 +1,42 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
+	"strings"
 
 	"github.com/google/uuid"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-sql-driver/mysql"
 )
+
+var db *sql.DB
 
 func main() {
 	log.SetPrefix("tf-server: ")
 
+	dbConfig := mysql.Config{
+		User:   os.Getenv("MYSQL_USER"),
+		Passwd: os.Getenv("MYSQL_PASSWORD"),
+		Net:    "tcp",
+		Addr:   "mysql:3306",
+		DBName: os.Getenv("MYSQL_DB"),
+	}
+
+	var dbOpenErr error
+	if db, dbOpenErr = sql.Open("mysql", dbConfig.FormatDSN()); dbOpenErr != nil {
+		log.Fatal(dbOpenErr)
+	}
+
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
+
+	log.Print("Connected to MySQL.")
 	log.Print("Creating server.")
 
 	router := gin.Default()
@@ -29,14 +54,6 @@ func main() {
 	}
 }
 
-type score struct {
-	Participation float64 `json:"participation"`
-	Collaboration float64 `json:"collaboration"`
-	Contribution  float64 `json:"contribution"`
-	Attitude      float64 `json:"attitude"`
-	Goals         float64 `json:"goals"`
-}
-
 type groupData struct {
 	Name    string    `json:"name"`
 	Scores  []float64 `json:"scores"`
@@ -51,12 +68,45 @@ type userSubmission struct {
 
 func postUserSubmission(c *gin.Context) {
 	submission := userSubmission{}
-	c.BindJSON(&submission)
+	if err := c.BindJSON(&submission); err != nil {
+		log.Println("ERROR: ", err)
+	}
 	log.Println("postUserSubmission: got ", submission)
 	subUUID := uuid.NewString()
 	log.Println(subUUID)
+
+	// TODO: Query teams table for team member IDs.
+
+	submissionIDs := make([]string, 0)
+	for i, memberData := range submission.GroupData {
+		result, err := db.Exec("insert into submissions (Member, Participation, Collaboration, Contribution, Attitude, Goals, Comment) values (?, ?, ?, ?, ?, ?, ?)",
+			i, memberData.Scores[0], memberData.Scores[1], memberData.Scores[2], memberData.Scores[3], memberData.Scores[4], memberData.Comment)
+		if err != nil {
+			log.Printf("postUserSubmission: %v\n", err)
+		}
+		if id, err := result.LastInsertId(); err != nil {
+			log.Printf("postUserSubmission: %v\n", err)
+		} else {
+			submissionIDs = append(submissionIDs, strconv.FormatInt(id, 10))
+		}
+	}
+
+	submissionIDsString := strings.Join(submissionIDs, ",")
+
+	result, err := db.Exec("insert into membersubmissions (UUID, Author, Submissions, Improvement) values (uuid_to_bin(?), 1, ?, ?)",
+		subUUID, submissionIDsString, submission.GroupData[0].Comment)
+	if err != nil {
+		log.Println("postUserSubmission: ", err)
+	}
+	subID, err := result.LastInsertId()
+	if err != nil {
+		log.Println("postUserSubmission: ", err)
+	}
+
 	res := struct {
+		Id   int64  `json:"id"`
 		Uuid string `json:"uuid"`
-	}{subUUID}
+	}{subID, subUUID}
+
 	c.JSON(http.StatusOK, res)
 }
