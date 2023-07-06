@@ -1,17 +1,6 @@
-package main
+package combine
 
-import (
-	"encoding/json"
-	"flag"
-	"fmt"
-	"io"
-	"os"
-	"path"
-	"strings"
-
-	xhtml "golang.org/x/net/html"
-)
-
+/*
 func main() {
 	var help, version, listOnly, checkOnly bool
 	var outFile, logLevel, rewrites, rewriteFile, wd string
@@ -130,3 +119,4 @@ or empty string "".`)
 	}
 	fmt.Fprintln(writer)
 }
+*/

@@ -9,7 +9,7 @@ export GOBUILDFLAGS += -trimpath -mod=readonly \
 
 GOTESTFLAGS ?= -race
 
-SUBDIRS := app combine-html
+SUBDIRS := app
 
 .PHONY: $(SUBDIRS)
 .PHONY: build-$(SUBDIRS) tidy-$(SUBDIRS) vet-$(SUBDIRS) lint-$(SUBDIRS) \
@@ -36,7 +36,7 @@ unittest: $(SUBDIRS:%=unittest-%)
 $(SUBDIRS:%=unittest-%) $(SUBDIRS:%=%/coverage.out):
 	{ [ "$@" = "unittest-$(@:unittest-%=%)" ] && cd $(@:unittest-%=%) || \
 	 cd $(@:%/coverage.out=%); } && \
-	$(GO) test $(GOTESTFLAGS) -coverprofile=coverage.out .
+	$(GO) test $(GOTESTFLAGS) -coverprofile=coverage.out ./...
 
 vet: $(SUBDIRS:%=vet-%)
 $(SUBDIRS:%=vet-%):
