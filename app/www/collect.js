@@ -8,7 +8,7 @@ function submit_form() {
 	const allScores = document.querySelectorAll(".feedback-data__cell");
 	//for each group member, collect and validate specific data
 	for (var i = 0; i < 6; i++) {
-		var memComment = "";
+		let memComment = "";
 		if (i == 0) {
 			memComment = comments[0].value;
 			if (memComment == "") {
@@ -24,9 +24,13 @@ function submit_form() {
 			if (allScores[i*5+k].value == '') {
 				// error - TODO: implement error in data validation
 			}
-			scores.push(allScores[i*5+k].value);
+			scores.push(parseFloat(allScores[i*5+k].value));
 		}
-		const data = [groupMemberNames[i].innerText, scores, memComment];
+		const data = {
+			name: groupMemberNames[i].innerText,
+			scores,
+			comment: memComment
+		};
 		groupData.push(data);
 	}
 	//write data to object
@@ -36,11 +40,25 @@ function submit_form() {
 		groupSize: 6,
 		groupsData: groupData
 	};
-	console.log(studentInput);
 	//json serialize it
-	var data = JSON.stringify(studentInput);
+	let data = JSON.stringify(studentInput);
 	//send in a post reqest to server '/api/submit'?
 
+	console.log(data)
 	//report successful submission
-	document.getElementById("successful_submit").innerHTML = "Form submitted successfully.";
+	fetch("/api/submit", {
+		method: "POST",
+		body: data,
+		headers: {
+			"Content-type": "application/json; charset=UTF-8"
+		}
+	}).then(res => {
+		if (res.ok) {
+			document.getElementById("successful_submit").innerHTML = "Form submitted successfully.";
+		} else {
+			document.getElementById("successful_submit").innerHTML = "Form submission error.";
+		}
+	}).catch(err => {
+		document.getElementById("successful_submit").innerHTML = "Form submission error.";
+	});
 }
