@@ -17,7 +17,7 @@ combine-html/combine-html
 *.out
 
 # Coverage report
-coverage.html
+app/coverage.html
 
 # Dependency directories (remove the comment below to include it)
 vendor/

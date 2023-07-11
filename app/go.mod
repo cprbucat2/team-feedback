@@ -1,4 +1,4 @@
-module github.com/cprbucat2/team-feedback/app
+module github.com/cprbucat2/team-feedback
 
 go 1.20
 
