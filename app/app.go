@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/cprbucat2/team-feedback/app/combine"
+	"github.com/cprbucat2/team-feedback/combine"
 	"github.com/gin-gonic/gin"
 	xhtml "golang.org/x/net/html"
 )

@@ -2,6 +2,8 @@ module github.com/cprbucat2/team-feedback
 
 go 1.20
 
+replace github.com/cprbucat2/team-feedback/combine => ./combine
+
 require (
 	github.com/gin-gonic/gin v1.9.1
 	golang.org/x/net v0.10.0
