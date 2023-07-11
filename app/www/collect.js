@@ -3,7 +3,6 @@
 function submit_form() {
 	//collect the data
 	const groupData = [];
-	console.log("your omo");
 	const groupMemberNames = document.querySelectorAll(".feedback-data__row-name");
 	const comments = document.querySelectorAll(".feedback-comments__member-comments");
 	const allScores = document.querySelectorAll(".feedback-data__cell");
