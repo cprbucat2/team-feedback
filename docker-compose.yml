@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  TeamFeedback:
+    image: team-feedback
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
+    tty: true # Get colorized Gin output.
+    ports:
+      - 8080:8080
