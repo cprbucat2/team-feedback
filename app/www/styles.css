@@ -84,9 +84,16 @@
 	border: none;
 	margin: 0px;
 	width: 100%;
+	background-color: white;
 	box-sizing: border-box;
-
 	text-align: right;
+	margin-top: 3px;
+	margin-left: -2px;
+}
+
+.feedback-data__cell--invalid {
+	background-clip: content-box;
+	box-shadow: inset 0 0 0 15px #ff000088;
 }
 
 .feedback-comments__caption {
