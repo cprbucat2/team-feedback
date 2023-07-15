@@ -1,64 +1,80 @@
+/**
+ * @file Handles submissions from index.html.
+ * @author Aidan Hoover, Aiden Woodruff
+ * @copyright Aidan Hoover and Aiden Woodruff 2023
+ * @license BSD-3-Clause
+ */
 
-
-function submit_form() {
-	//collect the data
-	const groupData = [];
-	const groupMemberNames = document.querySelectorAll(".feedback-data__row-name");
-	const comments = document.querySelectorAll(".feedback-comments__member-comments");
-	const allScores = document.querySelectorAll(".feedback-data__cell");
-	//for each group member, collect and validate specific data
-	for (var i = 0; i < 6; i++) {
-		let memComment = "";
-		if (i == 0) {
-			memComment = comments[0].value;
-			if (memComment == "") {
-				// error - TODO: implement error in data validation
+/**
+ * Collect scores from a .feedback-data__score-table.
+ * @param {HTMLTableElement} table
+ * @requires table Is a well-formed .feedback-data__score-table.
+ * @returns A list of member names and score lists.
+ */
+function collect_scores(table) {
+	const data = [];
+	for (const row of table.rows) {
+		if (!row.classList.contains("feedback-data__categories") &&
+		!row.classList.contains("feedback-data__colavg")) {
+			let name;
+			const datarow = [];
+			for (const cell of row.cells) {
+				if (cell.classList.contains("feedback-data__row-name")) {
+					name = cell.innerText;
+				} else if (!cell.classList.contains("feedback-data__row-avg")) {
+					datarow.push(parseFloat(cell.firstChild.value));
+				}
 			}
+			data.push({name, scores: datarow});
 		}
-		memComment = memComment.concat("\n", comments[i+1].value);
-		if (memComment == "") {
-			// error - TODO: implement error in data validation
-		}
-		const scores = [];
-		for (var k = 0; k < 5; k++) {
-			if (allScores[i*5+k].value == '') {
-				// error - TODO: implement error in data validation
-			}
-			scores.push(parseFloat(allScores[i*5+k].value));
-		}
-		const data = {
-			name: groupMemberNames[i].innerText,
-			scores,
-			comment: memComment
-		};
-		groupData.push(data);
 	}
-	//write data to object
-	const studentInput = {
-		studentName: "John",
-		studentGroup: "Beatles",
-		groupSize: 6,
-		groupsData: groupData
-	};
-	//json serialize it
-	let data = JSON.stringify(studentInput);
-	//send in a post reqest to server '/api/submit'?
+	return data;
+}
 
-	console.log(data)
-	//report successful submission
+/**
+ * Submit form and print status beneath button or reject.
+ * @listens MouseEvent
+ */
+function submit_form() {
+	// Collect feedback score table data.
+	const submissions = collect_scores(document.querySelector(".feedback-data__score-table"));
+	const improvement = document.querySelector("#self_improvement").value;
+
+	const comments = [];
+	document.querySelectorAll(".feedback-comments__member-comments").forEach(e => {
+		if (e.id !== "self_improvement") {
+			comments.push(e.value);
+		}
+	});
+	if (submissions.length !== comments.length) {
+		console.error("Score table and comment rows do not match.");
+		// return;
+	}
+	for (let i = 0; i < submissions.length; ++i) {
+		submissions[i].comment = comments[i];
+	}
+
+	// Create Submission object.
+	const membersubmission = {
+		author: scores[0].name,
+		submissions,
+		improvement
+	};
+
+	// Submit and report status.
 	fetch("/api/submit", {
 		method: "POST",
-		body: data,
+		body: JSON.stringify(membersubmission),
 		headers: {
 			"Content-type": "application/json; charset=UTF-8"
 		}
 	}).then(res => {
 		if (res.ok) {
-			document.getElementById("successful_submit").innerHTML = "Form submitted successfully.";
+			document.getElementById("successful_submit").innerText = "Form submitted successfully.";
 		} else {
-			document.getElementById("successful_submit").innerHTML = "Form submission error.";
+			document.getElementById("successful_submit").innerText = "Form submission error.";
 		}
 	}).catch(err => {
-		document.getElementById("successful_submit").innerHTML = "Form submission error.";
+		document.getElementById("successful_submit").innerText = "Form submission error.";
 	});
 }
