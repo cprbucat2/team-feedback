@@ -48,7 +48,7 @@ function submit_form() {
 	});
 	if (submissions.length !== comments.length) {
 		console.error("Score table and comment rows do not match.");
-		// return;
+		/** @todo Make this a fatal error once pages are generated. */
 	}
 	for (let i = 0; i < submissions.length; ++i) {
 		submissions[i].comment = comments[i];
