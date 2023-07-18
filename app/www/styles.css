@@ -72,13 +72,13 @@
 	background-color: #d2d2d2;
 }
 
-.feedback-data__colavg {
+.feedback-data__colavg, .feedback-data__memavg {
 	font-weight: bold;
 	text-align: center;
 	background-color: #929292;
 }
 
-.feedback-data__cell {
+.feedback-data__input {
 	resize: none;
 	outline: none;
 	border: none;

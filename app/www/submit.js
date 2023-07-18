@@ -37,7 +37,8 @@ function collect_scores(table) {
  */
 function submit_form() {
 	// Collect feedback score table data.
-	const submissions = collect_scores(document.querySelector(".feedback-data__score-table"));
+	const entries = collect_scores(document.querySelector(".feedback-data__score-table"));
+	/** @type {string} */
 	const improvement = document.querySelector("#self_improvement").value;
 
 	const comments = [];
@@ -46,18 +47,18 @@ function submit_form() {
 			comments.push(e.value);
 		}
 	});
-	if (submissions.length !== comments.length) {
+	if (entries.length !== comments.length) {
 		console.error("Score table and comment rows do not match.");
 		/** @todo Make this a fatal error once pages are generated. */
 	}
-	for (let i = 0; i < submissions.length; ++i) {
-		submissions[i].comment = comments[i];
+	for (let i = 0; i < entries.length; ++i) {
+		entries[i].comment = comments[i];
 	}
 
 	// Create Submission object.
 	const membersubmission = {
-		author: scores[0].name,
-		submissions,
+		author: entries[0].name,
+		entries,
 		improvement
 	};
 
