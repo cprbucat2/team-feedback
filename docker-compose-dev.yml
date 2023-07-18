@@ -11,7 +11,7 @@ services:
     volumes:
       - ./app/www:/www:ro
     ports:
-      - 8080:8080
+      - 8443:8443
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: root

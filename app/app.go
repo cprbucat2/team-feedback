@@ -45,7 +45,7 @@ func main() {
 	router.Static("/", "./www")
 	router.POST("/api/submit", postUserSubmission)
 
-	if err := router.RunTLS("0.0.0.0:8080", "/etc/ssl/certs/cert.pem", "/etc/ssl/certs/key.pem"); err != nil {
+	if err := router.RunTLS("0.0.0.0:8443", "/etc/ssl/certs/cert.pem", "/etc/ssl/certs/key.pem"); err != nil {
 		log.Fatal(err)
 	}
 }

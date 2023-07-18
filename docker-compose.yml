@@ -9,7 +9,7 @@ services:
       target: server
     tty: true # Get colorized Gin output.
     ports:
-      - 8080:8080
+      - 8443:8443
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: root
