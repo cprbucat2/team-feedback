@@ -1,7 +1,7 @@
 /**
  * @file Handles updating averages for .feedback-data__score-table
  * @author Aiden Woodruff
- * @copyright Aidan Hoover and Aiden Woodruff 2023
+ * @copyright 2023 Aidan Hoover and Aiden Woodruff
  * @license BSD-3-Clause
  */
 
