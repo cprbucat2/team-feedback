@@ -25,7 +25,7 @@ function is_valid(str) {
  */
 function data_validation_up(event) {
 	//console.log(event);		//.target .key
-	if (event.target.classList.contains("feedback-data__cell")) {
+	if (event.target.classList.contains("feedback-data__input")) {
 		if (is_valid(event.target.value)) {
 			if (event.target.parentElement.classList.contains("feedback-data__cell--invalid")) {event.target.parentElement.classList.remove("feedback-data__cell--invalid");}
 			return true;
@@ -52,7 +52,7 @@ function count_decimals(str) {
 
 function data_validation_down(event) {
 	//console.log(event);		//.target .key
-	if (event.target.classList.contains("feedback-data__cell")) {
+	if (event.target.classList.contains("feedback-data__input")) {
 		if ((event.key == '.' && count_decimals(event.target.value) == 0) || event.keyCode == '8'
 				|| event.keyCode == '9' || event.keyCode == '37' || event.keyCode == '39'
 				|| (event.key >= '0' && event.key <= '9')) {
