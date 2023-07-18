@@ -13,7 +13,7 @@ run: build
 tidy:
 	go mod tidy
 
-tf-server:
+tf-server: app.go go.sum go.mod
 	go build $(GOFLAGS) -o $@ .
 
 unittest coverage.out:
