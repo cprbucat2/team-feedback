@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-	<link rel="icon" href="favicon.ico" type="image/x-icon">
-	<script src="/averages.js"></script>
+		<link rel="icon" href="favicon.ico" type="image/x-icon">
     <title>Team Feedback Form</title>
+		<script src="/averages.js"></script>
+		<script src="submit.js"></script>
 </head>
 <body>
 	<div class="course">
@@ -42,58 +43,58 @@
 			<th class="feedback-data__header">Average</th>
 			</tr>
 			<tr>
-			<td class="feedback-data__row-name">Group Member 1</td>
+			<td class="feedback-data__row-name" id="gm1">Group Member 1</td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="participation_1" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="collaboration_1" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="contribution_1" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="attitude_1" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="goals_1" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td class="feedback-data__memavg"></td>
+			<td class="feedback-data__memavg" id="rowavg1"></td>
 			</tr>
 			<tr>
-			<td class="feedback-data__row-name">Group Member 2</td>
+			<td class="feedback-data__row-name" id="gm2">Group Member 2</td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="participation_2" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="collaboration_2" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="contribution_2" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="attitude_2" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="goals_2" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td class="feedback-data__memavg"></td>
+			<td class="feedback-data__memavg" id="rowavg2"></td>
 			</tr>
 			<tr>
-			<td class="feedback-data__row-name">Group Member 3</td>
+			<td class="feedback-data__row-name" id="gm3">Group Member 3</td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="participation_3" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="collaboration_3" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="contribution_3" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="attitude_3" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="goals_3" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td class="feedback-data__memavg"></td>
+			<td class="feedback-data__memavg" id="rowavg3"></td>
 			</tr>
 			<tr>
-			<td class="feedback-data__row-name">Group Member 4</td>
+			<td class="feedback-data__row-name" id="gm4">Group Member 4</td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="participation_4" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="collaboration_4" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="contribution_4" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="attitude_4" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="goals_4" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td class="feedback-data__memavg"></td>
+			<td class="feedback-data__memavg" id="rowavg4"></td>
 			</tr>
 			<tr>
-			<td class="feedback-data__row-name">Group Member 5</td>
+			<td class="feedback-data__row-name" id="gm5">Group Member 5</td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="participation_5" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="collaboration_5" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="contribution_5" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="attitude_5" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="goals_5" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td class="feedback-data__memavg"></td>
+			<td class="feedback-data__memavg" id="rowavg5"></td>
 			</tr>
 			<tr>
-			<td class="feedback-data__row-name">Group Member 6</td>
+			<td class="feedback-data__row-name" id="gm6">Group Member 6</td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="participation_6" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="collaboration_6" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="contribution_6" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="attitude_6" rows="1" cols="10" maxlength="10"></textarea></td>
 			<td class="feedback-data__cell"><textarea class="feedback-data__input" id="goals_6" rows="1" cols="10" maxlength="10"></textarea></td>
-			<td class="feedback-data__memavg"></td>
+			<td class="feedback-data__memavg" id="rowavg6"></td>
 			</tr>
 			<tr class="feedback-data__colavg-row">
 				<td class="feedback-data__row-name">Column Averages</td>
@@ -141,11 +142,11 @@
 			<tr class="feedback-comments__self">
 				<td>
 					<div class="text-underline text-bold">Comments (self): </div>
-					<div><textarea class="feedback-comments__member-comments" id="self_comments" rows="4" cols="20">Enter comments for yourself here...</textarea></div>
+					<div><textarea class="feedback-comments__member-comments" id="self_comments" rows="4" cols="20" placeholder="Enter comments for yourself here..."></textarea></div>
 				</td>
 				<td>
 					<div class="text-underline text-bold">2-3 Areas of Improvement: </div>
-					<div><textarea class="feedback-comments__member-comments" id="self_improvement" rows="4" cols="20">Describe 2-3 areas where you could improve here...</textarea></div>
+					<div><textarea class="feedback-comments__member-comments" id="self_improvement" rows="4" cols="20" placeholder="Describe 2-3 areas where you could improve here..."></textarea></div>
 				</td>
 			</tr>
 		</table>
@@ -153,46 +154,55 @@
 			<tr class="feedback-comments__member">
 				<td>
 					<div class="feedback-comments__caption">Comments (Group Member 2): </div>
-					<div><textarea class="feedback-comments__member-comments" id="comments1" rows="4" cols="40">Enter comments for Group Member 2 here...</textarea></div>
+					<div><textarea class="feedback-comments__member-comments" id="comments1" rows="4" cols="40" placeholder="Enter comments for Group Member 2 here..."></textarea></div>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="feedback-comments__caption">Comments (Group Member 3): </div>
-					<div><textarea class="feedback-comments__member-comments" id="comments4" rows="4" cols="40">Enter comments for Group Member 3 here...</textarea></div>
+					<div><textarea class="feedback-comments__member-comments" id="comments4" rows="4" cols="40" placeholder="Enter comments for Group Member 3 here..."></textarea></div>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="feedback-comments__caption">Comments (Group Member 4): </div>
-					<div><textarea class="feedback-comments__member-comments" id="comments4" rows="4" cols="40">Enter comments for Group Member 4 here...</textarea></div>
+					<div><textarea class="feedback-comments__member-comments" id="comments4" rows="4" cols="40" placeholder="Enter comments for Group Member 4 here..."></textarea></div>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="feedback-comments__caption">Comments (Group Member 5): </div>
-					<div><textarea class="feedback-comments__member-comments" id="comments5" rows="4" cols="40">Enter comments for Group Member 5 here...</textarea></div>
+					<div><textarea class="feedback-comments__member-comments" id="comments5" rows="4" cols="40" placeholder="Enter comments for Group Member 5 here..."></textarea></div>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="feedback-comments__caption">Comments (Group Member 6): </div>
-					<div><textarea class="feedback-comments__member-comments" id="comments6" rows="4" cols="40">Enter comments for Group Member 6 here...</textarea></div>
+					<div><textarea class="feedback-comments__member-comments" id="comments6" rows="4" cols="40" placeholder="Enter comments for Group Member 6 here..."></textarea></div>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="feedback-comments__caption">Comments (Group Member 7): </div>
-					<div><textarea class="feedback-comments__member-comments" id="comments7" rows="4" cols="40">Enter comments for Group Member 7 here...</textarea></div>
+					<div><textarea class="feedback-comments__member-comments" id="comments7" rows="4" cols="40" placeholder="Enter comments for Group Member 7 here..."></textarea></div>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="feedback-comments__caption">Comments (Group Member 8): </div>
-					<div><textarea class="feedback-comments__member-comments" id="comments8" rows="4" cols="40">Enter comments for Group Member 8 here...</textarea></div>
+					<div><textarea class="feedback-comments__member-comments" id="comments8" rows="4" cols="40" placeholder="Enter comments for Group Member 8 here..."></textarea></div>
 				</td>
 			</tr>
 		</table>
 	</div>
+	<div class="form-submission">
+		<br>
+		<input type="submit" class="text-center"id="submit" value="Submit Form" onclick="submit_form()" style="height:40px;width:150px;font-size:20px" />
+		<br><br>
+		<div id="successful_submit" style="color: rgb(126, 0, 0);"></div>
+		<br>
+	</div>
 </body>
 </html>
+
+
