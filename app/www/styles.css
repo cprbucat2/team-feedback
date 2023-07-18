@@ -72,13 +72,13 @@
 	background-color: #d2d2d2;
 }
 
-.feedback-data__colavg {
+.feedback-data__colavg, .feedback-data__memavg {
 	font-weight: bold;
 	text-align: center;
 	background-color: #929292;
 }
 
-.feedback-data__cell {
+.feedback-data__input {
 	resize: none;
 	outline: none;
 	border: none;
@@ -94,6 +94,10 @@
 .feedback-data__cell--invalid {
 	background-clip: content-box;
 	box-shadow: inset 0 0 0 15px #ff000088;
+}
+
+.feedback-data__cell:invalid {
+	background-color: red;
 }
 
 .feedback-comments__caption {
@@ -150,4 +154,8 @@ table {
 	margin: 0px;
 	width: 100%;
 	box-sizing: border-box;
+}
+
+.form-submission {
+	text-align: center;
 }

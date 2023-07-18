@@ -34,3 +34,6 @@ go.work
 
 # Linter cache
 .golangci-cache/
+
+# Mac files
+.DS_Store
