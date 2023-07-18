@@ -5,8 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
-	"strings"
 
 	"github.com/google/uuid"
 
@@ -54,47 +52,32 @@ func main() {
 	}
 }
 
-type groupData struct {
+type entry struct {
 	Name    string    `json:"name"`
 	Scores  []float64 `json:"scores"`
 	Comment string    `json:"comment"`
 }
-type userSubmission struct {
-	StudentName  string      `json:"studentName"`
-	StudentGroup string      `json:"studentGroup"`
-	GroupSize    int64       `json:"groupSize"`
-	GroupData    []groupData `json:"groupsData"`
+
+type submission struct {
+	Author      string  `json:"author"`
+	Entries     []entry `json:"entries"`
+	Improvement string  `json:"improvement"`
 }
 
 func postUserSubmission(c *gin.Context) {
-	submission := userSubmission{}
-	if err := c.BindJSON(&submission); err != nil {
+	s := submission{}
+	if err := c.BindJSON(&s); err != nil {
 		log.Println("ERROR: ", err)
 	}
-	log.Println("postUserSubmission: got ", submission)
+	log.Println("postUserSubmission: got ", s)
 	subUUID := uuid.NewString()
 	log.Println(subUUID)
 
 	// TODO: Query teams table for team member IDs.
 
-	submissionIDs := make([]string, 0)
-	for i, memberData := range submission.GroupData {
-		result, err := db.Exec("insert into submissions (Member, Participation, Collaboration, Contribution, Attitude, Goals, Comment) values (?, ?, ?, ?, ?, ?, ?)",
-			i, memberData.Scores[0], memberData.Scores[1], memberData.Scores[2], memberData.Scores[3], memberData.Scores[4], memberData.Comment)
-		if err != nil {
-			log.Printf("postUserSubmission: %v\n", err)
-		}
-		if id, err := result.LastInsertId(); err != nil {
-			log.Printf("postUserSubmission: %v\n", err)
-		} else {
-			submissionIDs = append(submissionIDs, strconv.FormatInt(id, 10))
-		}
-	}
-
-	submissionIDsString := strings.Join(submissionIDs, ",")
-
-	result, err := db.Exec("insert into membersubmissions (UUID, Author, Submissions, Improvement) values (uuid_to_bin(?), 1, ?, ?)",
-		subUUID, submissionIDsString, submission.GroupData[0].Comment)
+	// TODO: Insert Author ID instead of 1!!!
+	result, err := db.Exec("insert into submissions (UUID, author, improvement) values (uuid_to_bin(?), ?, ?)",
+		subUUID, 1, s.Improvement)
 	if err != nil {
 		log.Println("postUserSubmission: ", err)
 	}
@@ -103,10 +86,17 @@ func postUserSubmission(c *gin.Context) {
 		log.Println("postUserSubmission: ", err)
 	}
 
-	res := struct {
-		Id   int64  `json:"id"`
-		Uuid string `json:"uuid"`
-	}{subID, subUUID}
+	for _, e := range s.Entries {
+		_, err := db.Exec("insert into entries (submission_id, member, Participation, Collaboration, Contribution, Attitude, Goals, Comment) values (?, ?, ?, ?, ?, ?, ?, ?)",
+			subID, 1, e.Scores[0], e.Scores[1], e.Scores[2], e.Scores[3], e.Scores[4], e.Comment)
+		// TODO: Insert user ID of the member instead of 1!!!
+		if err != nil {
+			log.Printf("postUserSubmission: %v\n", err)
+		}
+	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, gin.H{
+		"id":   subID,
+		"uuid": subUUID,
+	})
 }
