@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  TeamFeedback-dev:
+  app-dev:
     image: team-feedback
     build:
       context: .
@@ -12,3 +12,33 @@ services:
       - ./app/www:/www:ro
     ports:
       - 8080:8080
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: example
+      MYSQL_DB: feedback
+    depends_on:
+      mysql:
+        condition: service_healthy
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: feedback
+    volumes:
+      - mysql-data-dev:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:3306"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 3307:8080
+
+volumes:
+  mysql-data-dev:
