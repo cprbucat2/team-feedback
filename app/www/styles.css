@@ -89,6 +89,10 @@
 	text-align: right;
 }
 
+.feedback-data__cell:invalid {
+	background-color: red;
+}
+
 .feedback-comments__caption {
 	text-decoration: underline;
 	font-weight: bold;
@@ -143,4 +147,8 @@ table {
 	margin: 0px;
 	width: 100%;
 	box-sizing: border-box;
+}
+
+.form-submission {
+	text-align: center;
 }
