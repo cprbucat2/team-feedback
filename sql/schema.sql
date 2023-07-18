@@ -22,7 +22,6 @@ insert into users (name, team_id) values ("nobody", 1);
 
 create table submissions (
 	id bigint auto_increment not null primary key,
-	UUID binary(16) not null, -- A uuid_to_bin encoded uuid.
 	author bigint not null,
 	improvement varchar(255) not null,
 	index (author),

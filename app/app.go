@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/google/uuid"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
 )
@@ -67,36 +65,45 @@ type submission struct {
 func postUserSubmission(c *gin.Context) {
 	s := submission{}
 	if err := c.BindJSON(&s); err != nil {
-		log.Println("ERROR: ", err)
+		log.Println("postUserSubmission:", err)
+		c.Status(http.StatusBadRequest)
+		return
 	}
-	log.Println("postUserSubmission: got ", s)
-	subUUID := uuid.NewString()
-	log.Println(subUUID)
+	log.Println("postUserSubmission: got", s)
 
 	// TODO: Query teams table for team member IDs.
 
+	var sub_id int64
 	// TODO: Insert Author ID instead of 1!!!
-	result, err := db.Exec("insert into submissions (UUID, author, improvement) values (uuid_to_bin(?), ?, ?)",
-		subUUID, 1, s.Improvement)
-	if err != nil {
-		log.Println("postUserSubmission: ", err)
-	}
-	subID, err := result.LastInsertId()
-	if err != nil {
-		log.Println("postUserSubmission: ", err)
-	}
-
-	for _, e := range s.Entries {
-		_, err := db.Exec("insert into entries (submission_id, member, Participation, Collaboration, Contribution, Attitude, Goals, Comment) values (?, ?, ?, ?, ?, ?, ?, ?)",
-			subID, 1, e.Scores[0], e.Scores[1], e.Scores[2], e.Scores[3], e.Scores[4], e.Comment)
-		// TODO: Insert user ID of the member instead of 1!!!
+	if result, err := db.Exec("insert into submissions (author, improvement) values (?, ?)",
+		1, s.Improvement); err != nil {
+		log.Println("postUserSubmission:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	} else {
+		sub_id, err = result.LastInsertId()
 		if err != nil {
-			log.Printf("postUserSubmission: %v\n", err)
+			log.Println("postUserSubmission:", err)
+			c.Status(http.StatusInternalServerError)
+			return
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"id":   subID,
-		"uuid": subUUID,
+	log.Println("postUserSubmission: inserted", sub_id)
+
+	for _, e := range s.Entries {
+		// TODO: Insert user ID of the member instead of 1!!!
+		if _, err := db.Exec(`insert into entries (submission_id, member,
+			Participation, Collaboration, Contribution, Attitude, Goals, Comment)
+			values (?, ?, ?, ?, ?, ?, ?, ?)`, sub_id, 1, e.Scores[0], e.Scores[1],
+			e.Scores[2], e.Scores[3], e.Scores[4], e.Comment); err != nil {
+			log.Println("postUserSubmission:", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"id": sub_id,
 	})
 }
