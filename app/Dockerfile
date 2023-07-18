@@ -1,7 +1,10 @@
 # Build stage
 FROM golang:alpine AS builder
 
-RUN apk add make git
+RUN apk add make git openssl
+
+WORKDIR /etc/ssl/certs
+RUN openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -nodes -subj "/C=US/ST=New York/O=Team Feedback/CN=localhost/T=dev"
 
 WORKDIR /app
 
@@ -17,6 +20,7 @@ FROM scratch as server
 
 # Get latest CA certificates
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /etc/ssl/certs/key.pem /etc/ssl/certs/cert.pem /etc/ssl/certs/
 
 COPY --from=builder /app/LICENSE /LICENSE
 COPY --from=builder /app/tf-server /tf-server
