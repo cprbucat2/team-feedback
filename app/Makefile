@@ -4,6 +4,7 @@ VERSION := 0.0.0
 
 GOFLAGS = -ldflags "-X github.com/cprbucat2/team-feedback.Version=$(VERSION)" -trimpath -mod=readonly
 GOTESTFLAGS ?= -race
+GOPATH ?= $(shell go env GOPATH)
 
 build: tf-server
 
@@ -33,7 +34,13 @@ install-golangci:
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1
 
 lint:
-	go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1 run
+	@if [ -x "$(GOPATH)/bin/golangci-lint" ]; then \
+		echo "$(GOPATH)/bin/golangci-lint run"; \
+		$(GOPATH)/bin/golangci-lint run; \
+	else \
+		echo "go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1 run"; \
+		go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1 run; \
+	fi
 
 test: vet fmt lint unittest
 

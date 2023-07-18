@@ -5,7 +5,8 @@ services:
     image: team-feedback
     build:
       context: .
-      dockerfile: ./app/Dockerfile
+      dockerfile: ./Dockerfile
+      target: server
     tty: true # Get colorized Gin output.
     ports:
       - 8080:8080
