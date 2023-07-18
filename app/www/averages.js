@@ -22,7 +22,6 @@
 					const val = parseFloat(cell.firstChild.value);
 					if (val) sum += val;
 					++count;
-					console.log(sum, count);
 				} else if (cell.classList.contains("feedback-data__memavg")) {
 					cell.innerText = (sum / count).toFixed(2);
 				}
@@ -80,5 +79,11 @@
 		document.querySelectorAll(".feedback-data__score-table .feedback-data__cell").forEach(el => {
 			el.addEventListener("keyup", update_averages);
 		});
+
+		// Initial averages (0s or saved form values)
+		document.querySelectorAll(".feedback-data__score-table").forEach(el => {
+			update_member_averages(el);
+			update_column_averages(el);
+		})
 	});
 })();
