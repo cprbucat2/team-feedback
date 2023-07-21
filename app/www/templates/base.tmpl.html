@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" href="/public/favicon.ico" type="image/x-icon">
 	<title>{{ .Title }} - TeamFeedback</title>
+	<link rel="stylesheet" href="/public/css/styles.css" />
 </head>
 <body>
 	<header>
@@ -16,7 +17,13 @@
 	<main>{{template "main" .}}</main>
 	<footer>
 	{{block "footer" .}}
-		<p>TeamFeedback (c) Aidan Hoover and Aiden Woodruff 2023</p>
+	<p>
+		TeamFeedback &copy; 2023 Aidan Hoover and Aiden Woodruff<br>
+		This work is licenced under a
+		<a href="https://opensource.org/license/BSD-3-clause/">
+			BSD-3-Clause<!--
+		--></a> license.
+	</p>
 	{{end}}
 	</footer>
 </body>
