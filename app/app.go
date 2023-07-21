@@ -42,7 +42,8 @@ func main() {
 		log.Fatalf("router.SetTrustedProxies: %v", err)
 	}
 
-	router.Static("/", "./www")
+	router.Static("/public", "./www/public")
+	router.StaticFile("/", "./www/public/index.html")
 	router.POST("/api/submit", postUserSubmission)
 
 	if err := router.Run("0.0.0.0:8080"); err != nil {
