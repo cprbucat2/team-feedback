@@ -10,10 +10,10 @@ jobs:
     - name: Check PR title tag.
       uses: Slashgear/action-check-pr-title@v4.3.0
       with:
-        regexp: "^\\[(Breaking|Feature|Fix|Docs|Dev)\\] .+$"
+        regexp: "^\\[(Breaking|Feature|Fix|Refactor|Docs|Dev)\\] .+$"
         helpMessage: >-
           This PR does not have a valid title tag. Valid tags are [Breaking],
-          [Feature], [Fix], [Docs], and [Dev]. See the file
+          [Feature], [Fix], [Refactor], [Docs], and [Dev]. See the file
           .github/pull_request_template.md for examples.
     - name: Check PR title length.
       uses: Slashgear/action-check-pr-title@v4.3.0
