@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" href="/public/favicon.ico" type="image/x-icon" />
+		<title>{{ .Title }} - TeamFeedback</title>
+		<script
+			src="https://code.jquery.com/jquery-3.7.0.slim.min.js"
+			integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE="
+			crossorigin="anonymous"
+		></script>
+		<link rel="stylesheet" href="/public/admin.css" />
+	</head>
+	<body>
+		<header>
+			{{block "header" .}}
+			<h1>TeamFeedback</h1>
+			{{end}}
+		</header>
+		<div class="content">
+			<nav class="nav-admin">
+				<div class="nav-admin__heading">Admin</div>
+				<ul class="nav-admin__list">
+					<li>Users</li>
+					<li>Teams</li>
+					<li>Submissions</li>
+				</ul>
+			</nav>
+			<main class="main">{{template "main" .}}</main>
+		</div>
+		<footer>
+			{{block "footer" .}}
+			<p>
+				TeamFeedback &copy; 2023 Aidan Hoover and Aiden Woodruff<br>
+				This work is licenced under a
+				<a href="https://opensource.org/license/BSD-3-clause/">
+					BSD-3-Clause<!--
+				--></a> license.
+			</p>
+			{{end}}
+		</footer>
+	</body>
+</html>

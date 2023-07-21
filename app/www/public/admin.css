@@ -1,0 +1,48 @@
+.content {
+	display: flex;
+}
+
+.nav-admin {
+	margin-right: 10px;
+	padding: 10px;
+	background-color:gray;
+}
+
+.nav-admin__heading {
+	font-size: 1.2em;
+}
+
+.nav-admin__list {
+	list-style: inside;
+	margin: 0px;
+	padding-left: 0px;
+}
+
+.user-list-title {
+	font-size: 2em;
+	margin-top: 0.5em;
+	margin-bottom: 0.25em;
+}
+
+.user-list {
+	margin-bottom: 10px;
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+.user-list__header {
+	font-weight: bold;
+	text-align: center;
+}
+
+.user-list td {
+	border: 1px solid black;
+}
+
+.user-list tbody td {
+	padding: 5px;
+}
+
+.user-list .user-list__entry:nth-child(odd) {
+	background-color:gainsboro;
+}

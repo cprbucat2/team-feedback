@@ -1,0 +1,29 @@
+{{define "main"}}
+<p class="user-list-title">Users</h3>
+<table class="user-list">
+	<thead>
+		<tr class="user-list__header">
+			<td><input type="checkbox" class="user-list__head-checkbox" /></td>
+			<td class="user-list__heading">Name</td>
+			<td class="user-list__heading">Controls</td>
+		</tr>
+	</thead>
+	<tbody>
+		{{range .Users}}
+		<tr class="user-list__entry">
+			<td>
+				<input type="checkbox" class="user-list__checkbox">
+			</td>
+			<td class="user-list__name">{{ .Name }}</td>
+			<td class="user-list__controls">
+				<input type="button" value="Modify" class="user-list__modify">
+				<input type="button" value="Remove" class="user-list__remove">
+			</td>
+		</tr>
+		{{end}}
+	</tbody>
+</table>
+<input type="button" value="Add" class="add-user-btn">
+<input type="button" value="Remove (0 selected)" class="remove-users-btn" disabled>
+<script src="public/js/useradmin.js"></script>
+{{end}}
