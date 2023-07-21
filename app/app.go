@@ -6,11 +6,18 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
 )
 
 var db *sql.DB
+
+func pageTemplates() multitemplate.Renderer {
+	r := multitemplate.NewRenderer()
+	r.AddFromFiles("submit", "www/public/index.html")
+	return r
+}
 
 func main() {
 	log.SetPrefix("tf-server: ")
@@ -43,7 +50,15 @@ func main() {
 	}
 
 	router.Static("/public", "./www/public")
-	router.StaticFile("/", "./www/public/index.html")
+
+	router.HTMLRender = pageTemplates()
+
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "submit", gin.H{
+			"Title": "Submit",
+		})
+	})
+
 	router.POST("/api/submit", postUserSubmission)
 
 	if err := router.Run("0.0.0.0:8080"); err != nil {

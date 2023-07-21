@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="/public/favicon.ico" type="image/x-icon">
+	<title>{{ .Title }} - TeamFeedback</title>
+</head>
+<body>
+	<header>
+	{{block "header" .}}
+		<h1>TeamFeedback</h1>
+	{{end}}
+	</header>
+	{{template "nav" .}}
+	<main>{{template "main" .}}</main>
+	<footer>
+	{{block "footer" .}}
+		<p>TeamFeedback (c) Aidan Hoover and Aiden Woodruff 2023</p>
+	{{end}}
+	</footer>
+</body>
+</html>
