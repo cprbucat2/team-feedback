@@ -12,7 +12,20 @@ import (
 
 var db *sql.DB
 
+func redirect(w http.ResponseWriter, req *http.Request) {
+	log.Print(req.Host)
+	req.URL.Host = req.Host[:len(req.Host)-3] + "443"
+	req.URL.Scheme = "https"
+	log.Print(req.URL.String())
+	http.Redirect(w, req,
+		req.URL.String(),
+		http.StatusMovedPermanently)
+}
+
 func main() {
+	// redirect every http request to https
+	go http.ListenAndServe(":8080", http.HandlerFunc(redirect))
+
 	log.SetPrefix("tf-server: ")
 
 	dbConfig := mysql.Config{
