@@ -15,14 +15,15 @@ function collect_scores(table) {
 	const data = [];
 	for (const row of table.rows) {
 		if (!row.classList.contains("feedback-data__categories") &&
-		!row.classList.contains("feedback-data__colavg")) {
+		!row.classList.contains("feedback-data__colavg-row")) {
 			let name;
 			const datarow = [];
 			for (const cell of row.cells) {
 				if (cell.classList.contains("feedback-data__row-name")) {
 					name = cell.innerText;
-				} else if (!cell.classList.contains("feedback-data__row-avg")) {
-					datarow.push(parseFloat(cell.firstChild.value));
+				} else if (!cell.classList.contains("feedback-data__memavg")) {
+					console.log(cell);
+					datarow.push(parseFloat(cell.querySelector(".feedback-data__input").value));
 				}
 			}
 			data.push({name, scores: datarow});
