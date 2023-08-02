@@ -2,9 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
@@ -15,7 +17,18 @@ var db *sql.DB
 
 func pageTemplates() multitemplate.Renderer {
 	r := multitemplate.NewRenderer()
-	r.AddFromFiles("submit", "www/public/index.html")
+	templates, err := filepath.Glob("www/templates/*.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	incFunc := func(x int) int {
+		return x + 1
+	}
+
+	files := []string{"www/layouts/base.html", "www/pages/submit.html"}
+	files = append(files, templates...)
+	r.AddFromFilesFuncs("submit.html", template.FuncMap{"inc": incFunc}, files...)
 	return r
 }
 
@@ -54,8 +67,30 @@ func main() {
 	router.HTMLRender = pageTemplates()
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "submit", gin.H{
+		c.HTML(http.StatusOK, "submit.html", gin.H{
 			"Title": "Submit",
+			"Members": []string{
+				"Keyser Soze",
+				"Keaton",
+				"Fenster",
+				"MacManus",
+				"Hockney",
+				"Verbal",
+			},
+			"Categories": []string{
+				"Participation",
+				"Collaboration",
+				"Contribution",
+				"Attitude",
+				"Goals",
+			},
+			"CategoryDescriptions": []string{
+				"Did they attend meetings, follow through on their commitments, and meet deadlines?",
+				"Were they open to the ideas of others and treat others with respect?",
+				"Did they share ideas and make a fair contribution to the team effort?",
+				"Did they have a positive attitude and conduct themselves in a professional manner?",
+				"Did they support the goals of the tear and stay focused on project objectives?",
+			},
 		})
 	})
 
