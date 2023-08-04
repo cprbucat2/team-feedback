@@ -1,0 +1,42 @@
+{{define "feedback-comments"}}
+<div class="feedback-comments">
+	<div class="feedback-comments__title">
+		<br>Part 2 - Mid and End of Semester BOTH
+	</div>
+	<table class="feedback-comments__description-table">
+		<tr class="feedback-comments__table-header">
+			<th colspan="2">Category Descriptions</th>
+		</tr>
+		{{$desc := .CategoryDescriptions}}
+		{{range $i, $category := .Categories}}
+		<tr>
+			<td class="feedback-comments__table-categories">{{$category}}</td>
+			<td class="feedback-comments__table-category-description">{{index $desc $i}}</td>
+		</tr>
+		{{end}}
+	</table>
+	<table class="feedback-comments__table">
+		<tr class="feedback-comments__self">
+			<td>
+				<div class="text-underline text-bold">Comments (self): </div>
+				<div><textarea class="feedback-comments__member-comments" id="self_comments" rows="4" cols="20" placeholder="Enter comments for yourself here..."></textarea></div>
+			</td>
+			<td>
+				<div class="text-underline text-bold">2-3 Areas of Improvement: </div>
+				<div><textarea class="feedback-comments__member-comments" id="self_improvement" rows="4" cols="20" placeholder="Describe 2-3 areas where you could improve here..."></textarea></div>
+			</td>
+		</tr>
+	</table>
+	<table class="feedback-comments__table">
+		{{range $index, $member := .Members}}
+		{{if eq $index 0}}{{continue}}{{end}}
+		<tr class="feedback-comments__member">
+			<td>
+				<div class="feedback-comments__caption">Comments (Group Member {{$index | inc}}): </div>
+				<div><textarea class="feedback-comments__member-comments" id="{{$member}}-comment" rows="4" cols="40" placeholder="Enter comments for Group Member {{$index | inc}} here..."></textarea></div>
+			</td>
+		</tr>
+		{{end}}
+	</table>
+</div>
+{{end}}
