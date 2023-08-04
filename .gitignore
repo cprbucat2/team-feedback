@@ -20,6 +20,7 @@ app/coverage.html
 
 # Dependency directories (remove the comment below to include it)
 vendor/
+node_modules/
 
 # Go workspace file
 go.work
@@ -34,6 +35,7 @@ go.work
 
 # Linter cache
 .golangci-cache/
+.eslintcache
 
 # Mac files
 .DS_Store

@@ -1,0 +1,25 @@
+{
+  "name": "team-feedback",
+  "version": "0.0.0",
+  "description": "development node server",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint --cache --cache-location .eslintcache ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cprbucat2/team-feedback.git"
+  },
+  "author": "Aidan Hoover and Aiden Woodruff",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/cprbucat2/team-feedback/issues"
+  },
+  "homepage": "https://github.com/cprbucat2/team-feedback#readme",
+  "devDependencies": {
+    "eslint": "^8.46.0"
+  },
+  "dependencies": {
+    "eslint-plugin-jsdoc": "^46.4.6"
+  }
+}
