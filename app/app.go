@@ -21,6 +21,10 @@ func pageTemplates() multitemplate.Renderer {
 	if err != nil {
 		log.Fatal(err)
 	}
+	pages, err := filepath.Glob("www/pages/*.html")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	incFunc := func(x int) int {
 		return x + 1
@@ -28,15 +32,11 @@ func pageTemplates() multitemplate.Renderer {
 
 	funcmap := template.FuncMap{"inc": incFunc}
 
-	// Submit
-	files := []string{"www/layouts/base.html", "www/pages/submit.html"}
-	files = append(files, templates...)
-	r.AddFromFilesFuncs("submit.html", funcmap, files...)
-
-	// Admin
-	files = []string{"www/layouts/admin.html", "www/pages/useradmin.html"}
-	files = append(files, templates...)
-	r.AddFromFilesFuncs("useradmin.html", funcmap, files...)
+	for _, page := range pages {
+		files := []string{"www/layouts/base.html", page}
+		files = append(files, templates...)
+		r.AddFromFilesFuncs(filepath.Base(page), funcmap, files...)
+	}
 	return r
 }
 

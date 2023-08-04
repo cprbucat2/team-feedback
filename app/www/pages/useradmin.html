@@ -1,3 +1,15 @@
+{{define "resources"}}
+<script
+	src="https://code.jquery.com/jquery-3.7.0.slim.min.js"
+	integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE="
+	crossorigin="anonymous"
+></script>
+<link rel="stylesheet" href="/public/css/admin.css" />
+<script src="/public/js/useradmin.js"></script>
+{{end}}
+{{define "nav"}}
+{{template "nav-admin" .}}
+{{end}}
 {{define "main"}}
 <p class="user-list-title">Users</h3>
 <table class="user-list">
@@ -25,5 +37,4 @@
 </table>
 <input type="button" value="Add" class="add-user-btn">
 <input type="button" value="Remove (0 selected)" class="remove-users-btn" disabled>
-<script src="/public/js/useradmin.js"></script>
 {{end}}
