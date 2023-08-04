@@ -26,9 +26,17 @@ func pageTemplates() multitemplate.Renderer {
 		return x + 1
 	}
 
+	funcmap := template.FuncMap{"inc": incFunc}
+
+	// Submit
 	files := []string{"www/layouts/base.html", "www/pages/submit.html"}
 	files = append(files, templates...)
-	r.AddFromFilesFuncs("submit.html", template.FuncMap{"inc": incFunc}, files...)
+	r.AddFromFilesFuncs("submit.html", funcmap, files...)
+
+	// Admin
+	files = []string{"www/layouts/admin.html", "www/pages/useradmin.html"}
+	files = append(files, templates...)
+	r.AddFromFilesFuncs("useradmin.html", funcmap, files...)
 	return r
 }
 
@@ -90,6 +98,28 @@ func main() {
 				"Did they share ideas and make a fair contribution to the team effort?",
 				"Did they have a positive attitude and conduct themselves in a professional manner?",
 				"Did they support the goals of the tear and stay focused on project objectives?",
+			},
+		})
+	})
+
+	router.GET("/admin", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/admin/user")
+	})
+
+	router.GET("/admin/user", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "useradmin.html", gin.H{
+			"Title": "User management",
+			"Users": []gin.H{
+				{"Name": "Aiden Woodruff"},
+				{"Name": "Aidan Hoover"},
+				{"Name": "Keaton"},
+				{"Name": "Hockney"},
+				{"Name": "McManus"},
+				{"Name": "Fenster"},
+				{"Name": "Verbal"},
+				{"Name": "Redfoot"},
+				{"Name": "Kobayashi"},
+				{"Name": "Keyser Soze"},
 			},
 		})
 	})
