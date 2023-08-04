@@ -24,7 +24,10 @@ func redirect(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	// redirect every http request to https
-	go http.ListenAndServe(":8080", http.HandlerFunc(redirect))
+	go func() {
+		err := http.ListenAndServe(":8080", http.HandlerFunc(redirect))
+		log.Fatal(err)
+	}()
 
 	log.SetPrefix("tf-server: ")
 
