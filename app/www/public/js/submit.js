@@ -7,9 +7,9 @@
 
 /**
  * Collect scores from a .feedback-data__score-table.
- * @param {HTMLTableElement} table
+ * @param {HTMLTableElement} table The table to collect data from.
  * @requires table Is a well-formed .feedback-data__score-table.
- * @returns A list of member names and score lists.
+ * @returns {{name: string, scores: number[]}[]} A list of member names and score lists.
  */
 function collect_scores(table) {
 	const data = [];
@@ -75,7 +75,11 @@ function submit_form() {
 		} else {
 			document.getElementById("successful_submit").innerText = "Form submission error.";
 		}
-	}).catch(err => {
+	}).catch(() => {
 		document.getElementById("successful_submit").innerText = "Form submission error.";
 	});
 }
+
+window.addEventListener("load", () => {
+	document.querySelector("#submit").addEventListener("click", submit_form);
+});

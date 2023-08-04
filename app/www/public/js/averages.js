@@ -1,5 +1,5 @@
 /**
- * @file Handles updating averages for .feedback-data__score-table
+ * @file Handles updating averages for .feedback-data__score-table.
  * @author Aiden Woodruff
  * @copyright 2023 Aidan Hoover and Aiden Woodruff
  * @license BSD-3-Clause
@@ -8,7 +8,7 @@
 (function () {
 	/**
 	 * Update member averages.
-	 * @param {HTMLTableElement} table A table.feedback-data__score-table
+	 * @param {HTMLTableElement} table A table.feedback-data__score-table.
 	 */
 	function update_member_averages(table) {
 		for (const row of table.rows) {
@@ -31,7 +31,7 @@
 
 	/**
 	 * Update column averages.
-	 * @param {HTMLTableElement} table A table.feedback-data__score-table
+	 * @param {HTMLTableElement} table A table.feedback-data__score-table.
 	 */
 	function update_column_averages(table) {
 		const sums = [];
@@ -65,11 +65,11 @@
 
 	/**
 	 * Update average row.
-	 * @param {KeyboardEvent} event
+	 * @param {KeyboardEvent} event A keypress on the table indicating new values.
 	 * @listens KeyboardEvent
 	 */
 	function update_averages(event) {
-		/** The parent table. @type {HTMLTableElement} */
+		/** @type {HTMLTableElement} The parent table. */
 		const table = event.target.parentElement.parentElement.parentElement.parentElement;
 		update_member_averages(table);
 		update_column_averages(table);
@@ -84,6 +84,6 @@
 		document.querySelectorAll(".feedback-data__score-table").forEach(el => {
 			update_member_averages(el);
 			update_column_averages(el);
-		})
+		});
 	});
 })();
