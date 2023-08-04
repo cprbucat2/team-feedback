@@ -19,7 +19,7 @@
 			let sum = 0, count = 0;
 			for (const cell of row.cells) {
 				if (cell.classList.contains("feedback-data__cell")) {
-					const val = parseFloat(cell.firstChild.value);
+					const val = parseFloat(cell.querySelector(".feedback-data__input").value);
 					if (val) sum += val;
 					++count;
 				} else if (cell.classList.contains("feedback-data__memavg")) {
@@ -43,8 +43,8 @@
 			for (let i = 0; i < row.cells.length; ++i) {
 				if (row.cells[i].classList.contains("feedback-data__cell")) {
 					sums[i] = sums[i] ? sums[i] : 0;
-					if (row.cells[i].firstChild.value) {
-						sums[i] += parseFloat(row.cells[i].firstChild.value);
+					if (row.cells[i].querySelector(".feedback-data__input").value) {
+						sums[i] += parseFloat(row.cells[i].querySelector(".feedback-data__input").value);
 					}
 				} else if (row.cells[i].classList.contains("feedback-data__memavg")) {
 					sums[i] = sums[i] ? sums[i] : 0;
@@ -76,8 +76,8 @@
 	}
 
 	window.addEventListener("load", () => {
-		document.querySelectorAll(".feedback-data__score-table .feedback-data__cell").forEach(el => {
-			el.addEventListener("keyup", update_averages);
+		document.querySelectorAll(".feedback-data__score-table .feedback-data__input").forEach(el => {
+			el.addEventListener("input", update_averages);
 		});
 
 		// Initial averages (0s or saved form values)

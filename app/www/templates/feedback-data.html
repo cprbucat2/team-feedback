@@ -1,0 +1,44 @@
+{{define "feedback-data"}}
+<div class = feedback-data>
+	<div class="feedback-data__title">
+		Part 1 - End of Semester ONLY
+	</div>
+	<div class="feedback-data__description">
+		Your end of semester evaluation with team assigned "ratings" will not be shared with other students. The row titled "column total" will update your totals. Please modify this file name to include an underscore and your RCSID (e.g. IED Peer Rating v4_anderm8.xls).<br>The spreadsheet is then submitted to the Peer Evaluation assienment on LMS
+	</div>
+	<table class="feedback-data__score-table">
+		{{block "feedback-data__categories" .}}
+		<tr class="feedback-data__categories">
+			<th class="feedback-data__header">Team Member</th>
+			{{range .Categories}}
+			<th class="feedback-data__header">{{.}}</th>
+			{{end}}
+			<th class="feedback-data__header">Average</th>
+		</tr>
+		{{end}}
+
+		{{block "feedback-data row" .}}
+		{{$Categories := .Categories}}
+		{{range $member := .Members}}
+		<tr>
+		<td class="feedback-data__row-name">{{$member}}</td>
+		{{range $Categories}}
+		<td class="feedback-data__cell">
+			<textarea class="feedback-data__input" id="{{$member}}-{{.}}" rows="1"
+			cols="10" maxlength="10"></textarea>
+		</td>
+		{{end}}
+		<td class="feedback-data__memavg" id="{{$member}}-rowavg"></td>
+		</tr>
+		{{end}}
+		{{end}}
+		<tr class="feedback-data__colavg-row">
+			<td class="feedback-data__row-name">Column Averages</td>
+			{{range .Categories}}
+			<td class="feedback-data__colavg"></td>
+			{{end}}
+			<td class="feedback-data__colavg"></td>
+		</tr>
+	</table>
+</div>
+{{end}}

@@ -1,0 +1,36 @@
+{{define "resources"}}
+<link rel="stylesheet" href="/public/css/styles.css" />
+<script src="/public/js/averages.js"></script>
+<script src="/public/js/submit.js"></script>
+{{end}}
+{{define "header"}}
+<div class="course">
+	<h1 class="course__title">
+		Introduction to Engineering Design<br>
+		With Professional Development 1
+	</h1>
+	<h4 class="course__subtitle">
+		Team Member and Self Evaluation
+	</h4>
+	<div class="course__description">
+		Teamwork is an important part of lED and an important part of the engineering design process. One of the principal evaluation elements of the work place is how well a professional works in a team and with a team. To make you and your teammates reflect on the activities of the team and individual members of the team, you are to complete the evaluation table below on yourself and the members of the team. During the semester, the comments section will be shared anonymously with fellow students to help teach the feedback process. At the end of the semester, the results of the evaluations from all team members will be used to establish your individual contribution factor.
+		<br>In the space below the evaluation table you should comment on each individual team member and on the team as a whole Please take into account all team activities when making comments and recording your peer evaluation.<br>
+		<br>List the names of each member of your team, including yourself. At mid-semester and at the end of semester, complete Part 2 for each team member. You should describe their performance and contribution to the overall team effort in Part 2. For each tear member identify a key strength, identify an area for improvement for each team member, and suggest how this might be achieved. You may extend sections if required.<br>
+		<br>At the end of the semester only use Part 1. Consider if you were in a position of assigning a grade to each individual on the team based upon what you have observed to date, what would the grade be? Please use the following grading system: A=4, A =3.67, B+=3.33, B=3, B-2.67, C+=2.33, C=2, C-=1.67, D+=1.33, D=1, F=0. ENTER THE POINT VALUE, NOT THE LETTER GRADE Be thoughtful - do NOT simply give everyone an A! The spreadsheet will calculate the averages. Do Part 1 ONLY tor the End of the Semester!<br><br>
+	</div>
+</div>
+{{end}}
+{{define "nav"}}
+<!--Empty nav.-->
+{{end}}
+{{define "main"}}
+{{template "feedback-data" .}}
+{{template "feedback-comments" .}}
+<div class="form-submission">
+	<br>
+	<input type="submit" class="text-center"id="submit" value="Submit Form" onclick="submit_form()" style="height:40px;width:150px;font-size:20px" />
+	<br><br>
+	<div id="successful_submit" style="color: rgb(126, 0, 0);"></div>
+	<br>
+</div>
+{{end}}
