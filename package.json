@@ -4,7 +4,7 @@
   "description": "development node server",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "lint": "eslint --cache --cache-location .eslintcache ."
   },
   "repository": {
     "type": "git",
