@@ -9,6 +9,9 @@
 		"ecmaVersion": "latest",
 		"sourceType": "module"
 	},
+	"plugins": [
+		"jsdoc"
+	],
 	"rules": {
 		"arrow-spacing": [
 			"error",
@@ -69,9 +72,6 @@
 		],
 		"jsdoc/check-access": "error",
 		"jsdoc/check-alignment": "error",
-		"jsdoc/check-examples": [
-			"warn"
-		],
 		"jsdoc/check-indentation": "error",
 		"jsdoc/check-param-names": "error",
 		"jsdoc/check-syntax": "error",
@@ -80,18 +80,11 @@
 		"jsdoc/empty-tags": "error",
 		"jsdoc/implements-on-classes": "error",
 		"jsdoc/match-description": "off",
-		"jsdoc/newline-after-description": "error",
 		"jsdoc/no-bad-blocks": "error",
 		"jsdoc/no-types": "off", // Only 1 if using TypeScript
 		"jsdoc/no-undefined-types": "error",
 		"jsdoc/require-description": "error",
 		"jsdoc/require-description-complete-sentence": "warn",
-		"jsdoc/require-example": [
-			"error",
-			{
-				"exemptNoArguments": true
-			}
-		],
 		"jsdoc/require-file-overview": "warn",
 		"jsdoc/require-hyphen-before-param-description": "off",
 		"jsdoc/require-param": "error",
@@ -118,7 +111,6 @@
 			"rules": {
 				"jsdoc/check-access": 0,
 				"jsdoc/check-alignment": 0,
-				"jsdoc/check-examples": 0,
 				"jsdoc/check-indentation": 0,
 				"jsdoc/check-param-names": 0,
 				"jsdoc/check-syntax": 0,
@@ -133,7 +125,6 @@
 				"jsdoc/no-undefined-types": 0,
 				"jsdoc/require-description": 0,
 				"jsdoc/require-description-complete-sentence": 0,
-				"jsdoc/require-example": 0,
 				"jsdoc/require-file-overview": 0,
 				"jsdoc/require-hyphen-before-param-description": 0,
 				"jsdoc/require-jsdoc": 0,
