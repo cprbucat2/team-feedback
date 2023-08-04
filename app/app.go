@@ -21,14 +21,22 @@ func pageTemplates() multitemplate.Renderer {
 	if err != nil {
 		log.Fatal(err)
 	}
+	pages, err := filepath.Glob("www/pages/*.html")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	incFunc := func(x int) int {
 		return x + 1
 	}
 
-	files := []string{"www/layouts/base.html", "www/pages/submit.html"}
-	files = append(files, templates...)
-	r.AddFromFilesFuncs("submit.html", template.FuncMap{"inc": incFunc}, files...)
+	funcmap := template.FuncMap{"inc": incFunc}
+
+	for _, page := range pages {
+		files := []string{"www/layouts/base.html", page}
+		files = append(files, templates...)
+		r.AddFromFilesFuncs(filepath.Base(page), funcmap, files...)
+	}
 	return r
 }
 
@@ -90,6 +98,28 @@ func main() {
 				"Did they share ideas and make a fair contribution to the team effort?",
 				"Did they have a positive attitude and conduct themselves in a professional manner?",
 				"Did they support the goals of the tear and stay focused on project objectives?",
+			},
+		})
+	})
+
+	router.GET("/admin", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/admin/user")
+	})
+
+	router.GET("/admin/user", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "useradmin.html", gin.H{
+			"Title": "User management",
+			"Users": []gin.H{
+				{"Name": "Aiden Woodruff"},
+				{"Name": "Aidan Hoover"},
+				{"Name": "Keaton"},
+				{"Name": "Hockney"},
+				{"Name": "McManus"},
+				{"Name": "Fenster"},
+				{"Name": "Verbal"},
+				{"Name": "Redfoot"},
+				{"Name": "Kobayashi"},
+				{"Name": "Keyser Soze"},
 			},
 		})
 	})

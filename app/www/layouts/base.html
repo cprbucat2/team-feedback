@@ -10,14 +10,16 @@
 	{{end}}
 </head>
 <body>
-	<header>
+	<header id="header">
 	{{block "header" .}}
 		<h1>TeamFeedback</h1>
 	{{end}}
 	</header>
-	{{template "nav" .}}
-	<main>{{template "main" .}}</main>
-	<footer>
+	<div id="content">
+		{{template "nav" .}}
+		<main>{{template "main" .}}</main>
+	</div>
+	<footer id="footer">
 	{{block "footer" .}}
 	<p>
 		TeamFeedback &copy; 2023 Aidan Hoover and Aiden Woodruff<br>
