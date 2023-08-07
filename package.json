@@ -4,6 +4,7 @@
   "description": "development node server",
   "main": "index.js",
   "scripts": {
+    "fmt:html": "prettier -c app/www/**/*.html",
     "lint": "eslint --cache --cache-location .eslintcache ."
   },
   "repository": {
@@ -17,7 +18,8 @@
   },
   "homepage": "https://github.com/cprbucat2/team-feedback#readme",
   "devDependencies": {
-    "eslint": "^8.46.0"
+    "eslint": "^8.46.0",
+    "prettier": "^3.0.1"
   },
   "dependencies": {
     "eslint-plugin-jsdoc": "^46.4.6"
