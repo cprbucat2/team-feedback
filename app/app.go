@@ -139,30 +139,7 @@ func main() {
 		})
 	})
 
-	router.GET("/admin/team", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "teamadmin.html", gin.H{
-			"Title": "Team management",
-			"Teams": []gin.H{
-				{
-					"Name": "The Usual Suspects",
-					"Members": []string{
-						"Keaton",
-						"Hockney",
-						"McManus",
-						"Fenster",
-						"Verbal",
-					},
-				},
-				{
-					"Name": "Team Feedback",
-					"Members": []string{
-						"Aiden Woodruff",
-						"Aidan Hoover",
-					},
-				},
-			},
-		})
-	})
+	router.GET("/admin/team", getAdminTeam)
 
 	router.POST("/api/submit", postUserSubmission)
 
@@ -181,6 +158,55 @@ type submission struct {
 	Author      string  `json:"author"`
 	Entries     []entry `json:"entries"`
 	Improvement string  `json:"improvement"`
+}
+
+func getAdminTeam(c *gin.Context) {
+	type adminTeam struct {
+		Id      int64
+		Name    string
+		Members []string
+	}
+
+	var teams []adminTeam
+
+	// 1 is team none.
+	if rows, err := db.Query("select id, name from teams where id != 1"); err != nil {
+		log.Panicf("getAdminTeam: %v", err)
+	} else {
+		defer rows.Close()
+		for rows.Next() {
+			var t adminTeam
+			if err := rows.Scan(&t.Id, &t.Name); err != nil {
+				log.Panicf("getAdminTeam: %v", err)
+			} else {
+				teams = append(teams, t)
+			}
+		}
+	}
+
+	for t := range teams {
+		if rows, err := db.Query("select name from users where team_id = ?", teams[t].Id); err != nil {
+			log.Panicf("getAdminTeam: %v", err)
+		} else {
+			for rows.Next() {
+				var member string
+				if err := rows.Scan(&member); err != nil {
+					log.Panicf("getAdminTeam: %v", err)
+				} else {
+					teams[t].Members = append(teams[t].Members, member)
+				}
+			}
+
+			if rows.Err() != nil {
+				log.Panicf("getAdminTeam: %v", err)
+			}
+		}
+	}
+
+	c.HTML(http.StatusOK, "teamadmin.html", gin.H{
+		"Title": "Team management",
+		"Teams": teams,
+	})
 }
 
 func postUserSubmission(c *gin.Context) {

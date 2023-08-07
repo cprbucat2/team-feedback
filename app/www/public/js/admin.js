@@ -1,5 +1,5 @@
 /**
- * @file Handle UI elements on useradmin.html.
+ * @file Handle UI elements on admin pages.
  * @author Aiden Woodruff
  * @copyright 2023 Aidan Hoover and Aiden Woodruff
  * @license BSD-3-Clause

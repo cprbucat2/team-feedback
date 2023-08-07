@@ -5,13 +5,13 @@
 	crossorigin="anonymous"
 ></script>
 <link rel="stylesheet" href="/public/css/admin.css" />
-<script src="/public/js/useradmin.js"></script>
+<script src="/public/js/admin.js"></script>
 {{end}}
 {{define "nav"}}
 {{template "nav-admin" "Teams"}}
 {{end}}
 {{define "main"}}
-<p class="admin-list-title">Teams</h3>
+<p class="admin-list-title">Teams</p>
 <table class="admin-list team-list">
 	<thead>
 		<tr class="admin-list__header">
@@ -23,7 +23,7 @@
 	</thead>
 	<tbody>
 		{{range .Teams}}
-		<tr class="admin-list__entry team-list__entry">
+		<tr class="admin-list__entry team-list__entry" data-id="{{ .Id }}">
 			<td>
 				<input type="checkbox" class="admin-list__checkbox">
 			</td>
@@ -31,6 +31,8 @@
 			<td class="team-list__controls">
 				<input type="button" value="Modify" class="team-list__modify">
 				<input type="button" value="Remove" class="team-list__remove">
+				<a href="/admin/submissions/team/{{ .Id }}"
+				class="team-list__submissions">Submissions</a>
 			</td>
 			<td class="team-list__members"
 			data-members="{{ .Members | datafmtmembers }}"><!--
