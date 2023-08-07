@@ -50,6 +50,12 @@
 			"error",
 			"unix"
 		],
+		"max-len": [
+			"error",
+			{
+				"tabWidth": 2
+			}
+		],
 		"quotes": [
 			"error",
 			"double",

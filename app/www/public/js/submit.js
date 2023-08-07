@@ -90,7 +90,8 @@ function validate_comments() {
  * Collect scores from a .feedback-data__score-table.
  * @param {HTMLTableElement} table The table to collect data from.
  * @requires table Is a well-formed .feedback-data__score-table.
- * @returns {{name: string, scores: number[]}[]} A list of member names and score lists.
+ * @returns {{name: string, scores: number[]}[]} A list of member names and
+ * score lists.
  */
 function collect_scores(table) {
 	const data = [];
@@ -123,16 +124,21 @@ function submit_form() {
 		return;
 	}
 	// Collect feedback score table data.
-	const entries = collect_scores(document.querySelector(".feedback-data__score-table"));
+	const entries = collect_scores(
+		document.querySelector(".feedback-data__score-table")
+	);
 	/** @type {string} */
 	const improvement = document.querySelector("#self_improvement").value;
 
 	const comments = [];
-	document.querySelectorAll(".feedback-comments__member-comments").forEach(e => {
-		if (e.id !== "self_improvement") {
-			comments.push(e.value);
+	document.querySelectorAll(".feedback-comments__member-comments").forEach(
+		e => {
+			if (e.id !== "self_improvement") {
+				comments.push(e.value);
+			}
 		}
-	});
+	);
+
 	if (entries.length !== comments.length) {
 		console.error("Score table and comment rows do not match.");
 		/** @todo Make this a fatal error once pages are generated. */
@@ -157,12 +163,15 @@ function submit_form() {
 		}
 	}).then(res => {
 		if (res.ok) {
-			document.getElementById("successful_submit").innerText = "Form submitted successfully.";
+			document.getElementById("successful_submit")
+				.innerText = "Form submitted successfully.";
 		} else {
-			document.getElementById("successful_submit").innerText = "Form submission error.";
+			document.getElementById("successful_submit")
+				.innerText = "Form submission error.";
 		}
 	}).catch(() => {
-		document.getElementById("successful_submit").innerText = "Form submission error.";
+		document.getElementById("successful_submit").
+			innerText = "Form submission error.";
 	});
 }
 
