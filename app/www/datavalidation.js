@@ -1,6 +1,5 @@
 
 function is_valid(str) {
-	console.log(str);
 	if (str=="") {return true;}
 	let hasDot = false;
 	for (let i = 0; i < str.length; i++) {
@@ -23,8 +22,7 @@ function is_valid(str) {
  * @param {KeyboardEvent} event
  * @returns
  */
-function data_validation_up(event) {
-	//console.log(event);		//.target .key
+function data_validation_input(event) {
 	if (event.target.classList.contains("feedback-data__input")) {
 		if (is_valid(event.target.value)) {
 			if (event.target.parentElement.classList.contains("feedback-data__cell--invalid")) {event.target.parentElement.classList.remove("feedback-data__cell--invalid");}
@@ -32,11 +30,8 @@ function data_validation_up(event) {
 		}
 		//event.target.classList.add("feedback-data__cell--invalid");
 		event.target.parentElement.classList.add("feedback-data__cell--invalid");
-		console.log(event);
 		//event.querySelector(':invalid');
-		return false;
 	}
-	return true;
 }
 
 function count_decimals(str) {
@@ -59,9 +54,17 @@ function data_validation_down(event) {
 			return true;
 		}
 		event.preventDefault();
-		return false;
 	}
 	return true;
+}
+
+function data_validation_comment() {
+	for (const cell of document.querySelectorAll(".feedback-comments__member-comments")) {
+		data = cell.value;
+		if (data!="" && typeof data!="undefined" && cell.parentElement.classList.contains("feedback-comments__member-comments--invalid")) {
+			cell.parentElement.classList.remove("feedback-comments__member-comments--invalid");
+		}
+	}
 }
 
 function update_average() {
@@ -70,5 +73,9 @@ function update_average() {
 
 window.addEventListener("load", () => {
 	document.querySelector(".feedback-data__score-table").addEventListener("keydown", data_validation_down);
-	document.querySelector(".feedback-data__score-table").addEventListener("keyup", data_validation_up);
+	document.querySelector(".feedback-data__score-table").addEventListener("input", data_validation_input);
+	var elements = document.querySelectorAll(".feedback-comments__table");
+	elements.forEach(function(element) {
+		element.addEventListener("input", data_validation_comment);
+	});
 })

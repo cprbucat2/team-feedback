@@ -144,6 +144,15 @@ table {
 	width: 100%;
 	box-sizing: border-box;
 	height: 1em*4;
+	padding-bottom: 3px;
+}
+
+.feedback-comments__member-comments--invalid {
+	background-clip: content-box;
+	box-shadow: 0 0 0 1.5px #ff0000a0;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-bottom: 5px;
 }
 
 .feedback-comments__member-comments {
@@ -151,8 +160,8 @@ table {
 	resize: none;
 	outline: none;
 	border: none;
-	margin: 0px;
 	width: 100%;
+	padding-right: 0px;
 	box-sizing: border-box;
 }
 
