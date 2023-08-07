@@ -1,4 +1,10 @@
-/* eslint-env browser, jquery */
+/**
+ * @file Handle UI elements on useradmin.html.
+ * @author Aiden Woodruff
+ * @copyright 2023 Aidan Hoover and Aiden Woodruff
+ * @license BSD-3-Clause
+ */
+
 jQuery(function ($) {
 	/**
 	 * Listen to checkbox clicks and update remove button and head checkbox.
@@ -6,7 +12,7 @@ jQuery(function ($) {
 	 */
 	$(".user-list__checkbox").on("click", () => {
 		const boxes = $(".user-list__checkbox");
-		const count = boxes.map((i,e) => e.checked).get().reduce((x,sum) => x + sum);
+		const count = boxes.map((i, e) => e.checked).get().reduce((x, sum) => x + sum);
 		if (count === 0) {
 			$(".remove-users-btn").prop("disabled", true);
 			$(".user-list__head-checkbox").prop("checked", false);
