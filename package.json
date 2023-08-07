@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "fmt:html": "prettier -c app/www/**/*.html",
+		"fmt-fix:html": "prettier -w app/www/**/*.html",
     "lint": "eslint --cache --cache-location .eslintcache ."
   },
   "repository": {
