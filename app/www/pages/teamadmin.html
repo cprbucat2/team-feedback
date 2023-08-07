@@ -1,0 +1,45 @@
+{{define "resources"}}
+<script
+	src="https://code.jquery.com/jquery-3.7.0.slim.min.js"
+	integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE="
+	crossorigin="anonymous"
+></script>
+<link rel="stylesheet" href="/public/css/admin.css" />
+<script src="/public/js/useradmin.js"></script>
+{{end}}
+{{define "nav"}}
+{{template "nav-admin" "Teams"}}
+{{end}}
+{{define "main"}}
+<p class="admin-list-title">Teams</h3>
+<table class="admin-list team-list">
+	<thead>
+		<tr class="admin-list__header">
+			<td><input type="checkbox" class="admin-list__head-checkbox" /></td>
+			<td class="admin-list__heading">Name</td>
+			<td class="admin-list__heading">Controls</td>
+			<td class="admin-list__heading">Members</td>
+		</tr>
+	</thead>
+	<tbody>
+		{{range .Teams}}
+		<tr class="admin-list__entry team-list__entry">
+			<td>
+				<input type="checkbox" class="admin-list__checkbox">
+			</td>
+			<td class="team-list__name">{{ .Name }}</td>
+			<td class="team-list__controls">
+				<input type="button" value="Modify" class="team-list__modify">
+				<input type="button" value="Remove" class="team-list__remove">
+			</td>
+			<td class="team-list__members"
+			data-members="{{ .Members | datafmtmembers }}"><!--
+			-->{{ .Members | fmtmembers }}</td>
+		</tr>
+		{{end}}
+	</tbody>
+</table>
+<input type="button" value="Add" class="team-add-btn">
+<input type="button" value="Remove (0 selected)" class="admin-remove-btn teams-remove-btn" disabled>
+<input type="button" value="Randomize teams" class="teams-randomize-btn" disabled>
+{{end}}

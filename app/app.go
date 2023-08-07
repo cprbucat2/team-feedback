@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
@@ -30,7 +31,21 @@ func pageTemplates() multitemplate.Renderer {
 		return x + 1
 	}
 
-	funcmap := template.FuncMap{"inc": incFunc}
+	fmtmembers := func(members []string) string {
+		return strings.Join(members, ", ")
+	}
+
+	datafmtmembers := func(members []string) string {
+		for m := range members {
+			members[m] = strings.ReplaceAll(members[m], "\\", "\\\\")
+			members[m] = strings.ReplaceAll(members[m], ",", "\\,")
+		}
+		return strings.Join(members, ",")
+	}
+
+	funcmap := template.FuncMap{
+		"inc": incFunc, "fmtmembers": fmtmembers, "datafmtmembers": datafmtmembers,
+	}
 
 	for _, page := range pages {
 		files := []string{"www/layouts/base.html", page}
@@ -120,6 +135,31 @@ func main() {
 				{"Name": "Redfoot"},
 				{"Name": "Kobayashi"},
 				{"Name": "Keyser Soze"},
+			},
+		})
+	})
+
+	router.GET("/admin/team", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "teamadmin.html", gin.H{
+			"Title": "Team management",
+			"Teams": []gin.H{
+				{
+					"Name": "The Usual Suspects",
+					"Members": []string{
+						"Keaton",
+						"Hockney",
+						"McManus",
+						"Fenster",
+						"Verbal",
+					},
+				},
+				{
+					"Name": "Team Feedback",
+					"Members": []string{
+						"Aiden Woodruff",
+						"Aidan Hoover",
+					},
+				},
 			},
 		})
 	})
