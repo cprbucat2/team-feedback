@@ -50,6 +50,7 @@
 			"error",
 			"unix"
 		],
+		"max-len": "error",
 		"quotes": [
 			"error",
 			"double",
