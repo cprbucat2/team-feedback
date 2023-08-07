@@ -19,7 +19,9 @@
 			let sum = 0, count = 0;
 			for (const cell of row.cells) {
 				if (cell.classList.contains("feedback-data__cell")) {
-					const val = parseFloat(cell.querySelector(".feedback-data__input").value);
+					const val = parseFloat(
+						cell.querySelector(".feedback-data__input").value
+					);
 					if (val) sum += val;
 					++count;
 				} else if (cell.classList.contains("feedback-data__memavg")) {
@@ -44,7 +46,9 @@
 				if (row.cells[i].classList.contains("feedback-data__cell")) {
 					sums[i] = sums[i] ? sums[i] : 0;
 					if (row.cells[i].querySelector(".feedback-data__input").value) {
-						sums[i] += parseFloat(row.cells[i].querySelector(".feedback-data__input").value);
+						sums[i] += parseFloat(
+							row.cells[i].querySelector(".feedback-data__input").value
+						);
 					}
 				} else if (row.cells[i].classList.contains("feedback-data__memavg")) {
 					sums[i] = sums[i] ? sums[i] : 0;
@@ -70,15 +74,18 @@
 	 */
 	function update_averages(event) {
 		/** @type {HTMLTableElement} The parent table. */
-		const table = event.target.parentElement.parentElement.parentElement.parentElement;
+		const table = event.target.parentElement.parentElement.parentElement
+			.parentElement;
 		update_member_averages(table);
 		update_column_averages(table);
 	}
 
 	window.addEventListener("load", () => {
-		document.querySelectorAll(".feedback-data__score-table .feedback-data__input").forEach(el => {
-			el.addEventListener("input", update_averages);
-		});
+		document
+			.querySelectorAll(".feedback-data__score-table .feedback-data__input")
+			.forEach(el => {
+				el.addEventListener("input", update_averages);
+			});
 
 		// Initial averages (0s or saved form values)
 		document.querySelectorAll(".feedback-data__score-table").forEach(el => {
