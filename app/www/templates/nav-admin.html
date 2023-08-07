@@ -2,9 +2,9 @@
 <nav class="nav-admin">
 	<div class="nav-admin__heading">Admin</div>
 	<ul class="nav-admin__list">
-		<li>Users</li>
-		<li>Teams</li>
-		<li>Submissions</li>
+		<li>{{if ne . "Users"}}<a href="/admin/user">Users</a>{{else}}Users{{end}}</li>
+		<li>{{if ne . "Teams"}}<a href="/admin/team">Teams</a>{{else}}Teams{{end}}</li>
+		<li>{{if ne . "Submissions"}}<a href="/admin/submissions">Submissions</a>{{else}}Submissions{{end}}</li>
 	</ul>
 </nav>
 {{end}}

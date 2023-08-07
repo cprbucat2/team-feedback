@@ -18,31 +18,36 @@
 	padding-left: 0px;
 }
 
-.user-list-title {
+.admin-list-title {
 	font-size: 2em;
 	margin-top: 0.5em;
 	margin-bottom: 0.25em;
 }
 
-.user-list {
+.admin-list {
 	margin-bottom: 10px;
 	border: 1px solid black;
 	border-collapse: collapse;
 }
 
-.user-list__header {
+.admin-list__header {
 	font-weight: bold;
 	text-align: center;
 }
 
-.user-list td {
+.admin-list td {
 	border: 1px solid black;
 }
 
-.user-list tbody td {
+.admin-list thead td {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.admin-list tbody td {
 	padding: 5px;
 }
 
-.user-list .user-list__entry:nth-child(odd) {
+.admin-list .admin-list__entry:nth-child(odd) {
 	background-color:gainsboro;
 }
