@@ -1,6 +1,6 @@
 <!--
 PR titles must have a valid tag and be under 80 characters.
-Valid tags: [Breaking], [Feature], [Fix], [Docs], [Dev]
+Valid tags: [Breaking], [Feature], [Fix], [Refactor], [Docs], [Dev]
 Examples:
 [Feature] Add ability to control weather.
 [Dev] Test sprinkler.

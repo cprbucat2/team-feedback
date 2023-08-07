@@ -2,15 +2,43 @@ package main
 
 import (
 	"database/sql"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
+	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
 )
 
 var db *sql.DB
+
+func pageTemplates() multitemplate.Renderer {
+	r := multitemplate.NewRenderer()
+	templates, err := filepath.Glob("www/templates/*.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	pages, err := filepath.Glob("www/pages/*.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	incFunc := func(x int) int {
+		return x + 1
+	}
+
+	funcmap := template.FuncMap{"inc": incFunc}
+
+	for _, page := range pages {
+		files := []string{"www/layouts/base.html", page}
+		files = append(files, templates...)
+		r.AddFromFilesFuncs(filepath.Base(page), funcmap, files...)
+	}
+	return r
+}
 
 func main() {
 	log.SetPrefix("tf-server: ")
@@ -42,7 +70,60 @@ func main() {
 		log.Fatalf("router.SetTrustedProxies: %v", err)
 	}
 
-	router.Static("/", "./www")
+	router.Static("/public", "./www/public")
+
+	router.HTMLRender = pageTemplates()
+
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "submit.html", gin.H{
+			"Title": "Submit",
+			"Members": []string{
+				"Keyser Soze",
+				"Keaton",
+				"Fenster",
+				"MacManus",
+				"Hockney",
+				"Verbal",
+			},
+			"Categories": []string{
+				"Participation",
+				"Collaboration",
+				"Contribution",
+				"Attitude",
+				"Goals",
+			},
+			"CategoryDescriptions": []string{
+				"Did they attend meetings, follow through on their commitments, and meet deadlines?",
+				"Were they open to the ideas of others and treat others with respect?",
+				"Did they share ideas and make a fair contribution to the team effort?",
+				"Did they have a positive attitude and conduct themselves in a professional manner?",
+				"Did they support the goals of the tear and stay focused on project objectives?",
+			},
+		})
+	})
+
+	router.GET("/admin", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/admin/user")
+	})
+
+	router.GET("/admin/user", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "useradmin.html", gin.H{
+			"Title": "User management",
+			"Users": []gin.H{
+				{"Name": "Aiden Woodruff"},
+				{"Name": "Aidan Hoover"},
+				{"Name": "Keaton"},
+				{"Name": "Hockney"},
+				{"Name": "McManus"},
+				{"Name": "Fenster"},
+				{"Name": "Verbal"},
+				{"Name": "Redfoot"},
+				{"Name": "Kobayashi"},
+				{"Name": "Keyser Soze"},
+			},
+		})
+	})
+
 	router.POST("/api/submit", postUserSubmission)
 
 	if err := router.Run("0.0.0.0:8080"); err != nil {
