@@ -12,15 +12,17 @@ jQuery(function ($) {
 	 */
 	$(".admin-list__checkbox").on("click", () => {
 		const boxes = $(".admin-list__checkbox");
-		const count = boxes.map((i, e) => e.checked).get().reduce((x, sum) => x + sum);
+		const count = boxes.map((i, e) => e.checked).get()
+			.reduce((x, sum) => x + sum);
 		if (count === 0) {
-			$(".admin-remove-btn").prop("disabled", true);
-			$(".admin-list__head-checkbox").prop("checked", false);
-			$(".admin-list__head-checkbox").prop("indeterminate", false);
+			$(".remove-users-btn").prop("disabled", true);
+			$(".user-list__head-checkbox").prop("checked", false);
+			$(".user-list__head-checkbox").prop("indeterminate", false);
 		} else {
-			$(".admin-remove-btn").prop("disabled", false);
-			$(".admin-list__head-checkbox").prop("checked", count === boxes.length);
-			$(".admin-list__head-checkbox").prop("indeterminate", count !== boxes.length);
+			$(".remove-users-btn").prop("disabled", false);
+			$(".user-list__head-checkbox").prop("checked", count === boxes.length);
+			$(".user-list__head-checkbox")
+				.prop("indeterminate", count !== boxes.length);
 		}
 		$(".admin-remove-btn").prop("value", `Remove (${count} selected)`);
 	});

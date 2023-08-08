@@ -84,9 +84,16 @@
 	border: none;
 	margin: 0px;
 	width: 100%;
+	background-color: white;
 	box-sizing: border-box;
-
 	text-align: right;
+	margin-top: 3px;
+	margin-left: -2px;
+}
+
+.feedback-data__cell--invalid {
+	background-clip: content-box;
+	box-shadow: inset 0 0 0 15px #ff000088;
 }
 
 .feedback-data__cell:invalid {
@@ -111,6 +118,7 @@ table {
 	border: 1px solid;
 	width: 100%;
 	border-collapse: collapse;
+	padding-bottom: 3px;
 }
 
 .feedback-data__score-table {
@@ -137,15 +145,30 @@ table {
 	width: 100%;
 	box-sizing: border-box;
 	height: 1em*4;
+	padding-bottom: 3px;
 }
+
+.feedback-comments__member td {
+	padding: 5px;
+}
+
+.feedback-comments__member--invalid {
+	background-clip: content-box;
+	box-shadow: 0 0 0 1.5px #ff0000a0;
+	box-shadow: inset 0 0 0 5px #ff0000a0;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-bottom: 5px;
+}
+
 
 .feedback-comments__member-comments {
 	font-weight: bold;
 	resize: none;
 	outline: none;
 	border: none;
-	margin: 0px;
 	width: 100%;
+	padding-right: 0px;
 	box-sizing: border-box;
 }
 
