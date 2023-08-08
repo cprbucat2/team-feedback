@@ -41,4 +41,17 @@ jQuery(function ($) {
 			$(".admin-remove-btn").prop("value", `Remove (${boxes.length} selected)`);
 		}
 	});
+
+	/**
+	 * Control the add button.
+	 * @listens MouseEvent
+	 */
+	$("team-add-btn").on("click", event => {
+		if (event.target.disabled) {
+			event.stopPropagation();
+		} else {
+			event.target.disabled = true;
+			$(".team-list__add-info").removeClass("team-list__add-info--hidden");
+		}
+	});
 });
