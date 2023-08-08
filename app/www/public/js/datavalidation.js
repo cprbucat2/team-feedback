@@ -74,11 +74,11 @@ function data_validation_comment() {
 	)) {
 		let data = cell.value;
 		if (data!="" && typeof data!="undefined"
-		&& cell.parentElement.classList.contains(
-			"feedback-comments__member-comments--invalid"
+		&& cell.parentElement.parentElement.parentElement.classList.contains(
+			"feedback-comments__member--invalid"
 		)) {
-			cell.parentElement.classList.remove(
-				"feedback-comments__member-comments--invalid"
+			cell.parentElement.parentElement.parentElement.classList.remove(
+				"feedback-comments__member--invalid"
 			);
 		}
 	}

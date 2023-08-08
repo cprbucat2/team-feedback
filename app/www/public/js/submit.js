@@ -79,8 +79,8 @@ function validate_comments() {
 		data = cell.value;
 		if (data=="" || typeof data=="undefined") {
 			validated = false;
-			cell.parentElement.classList.add(
-				"feedback-comments__member-comments--invalid"
+			cell.parentElement.parentElement.parentElement.classList.add(
+				"feedback-comments__member--invalid"
 			);
 		}
 	}
