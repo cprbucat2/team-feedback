@@ -6,16 +6,16 @@
  */
 
 /**
- * Check valid input in all cells
- * @param {str}
- * @returns if given str is a string of numeric floating point value between 0 and 4 inclusive
+ * Check valid input in all cells.
+ * @param {string} str The string to check validity.
+ * @returns {boolean} If str is a string of numeric value where 0 <= str <= 4.
  */
 function is_valid(str) {
-	if (str=="" || typeof str=="undefined") {return false;}
+	if (str=="" || typeof str=="undefined") { return false; }
 	let hasDot = false;
 	for (let i = 0; i < str.length; i++) {
-		if (str[i] < '0' || str[i] > '9') {
-			if (str[i] == '.' && !hasDot) {
+		if (str[i] < "0" || str[i] > "9") {
+			if (str[i] == "." && !hasDot) {
 				hasDot = true;
 				continue;
 			}
@@ -29,10 +29,10 @@ function is_valid(str) {
 }
 
 /**
- * Check valid input in all cells
- * @param {table}
+ * Check valid input in all cells.
+ * @param {table} table Table to check validity of cells.
  * @requires table Is a well-formed .feedback-data__score-table.
- * @returns true or false table is full and valid
+ * @returns {boolean} True or false table is full and valid.
  */
 function validate_scores_table(table) {
 	let validated = true;
@@ -44,7 +44,7 @@ function validate_scores_table(table) {
 				if (!cell.classList.contains("feedback-data__memavg") &&
 					!cell.classList.contains("feedback-data__row-name") &&
 					!cell.classList.contains("feedback-data__colavg")) {
-					data = cell.firstChild.value;
+					data = cell.firstChild.nextSibling.value;
 					if (!is_valid(data)) {
 						if (!cell.classList.contains("feedback-data__cell--invalid")) {
 							cell.classList.add("feedback-data__cell--invalid");
@@ -57,7 +57,8 @@ function validate_scores_table(table) {
 	}
 	if (!validated) {
 		console.error("Invalid score table data");
-		document.getElementById("successful_submit").innerText = "Form submission ERROR.";
+		document.getElementById("successful_submit").innerText
+		= "Form submission ERROR.";
 	}
 	return validated;
 }
@@ -65,23 +66,28 @@ function validate_scores_table(table) {
 
 
 /**
- * Check there is input in all comment boxes
- * @returns true if all comments are filled in
+ * Check there is input in all comment boxes.
+ * @returns {boolean} True if all comments are filled in.
  */
 function validate_comments() {
-	//document.querySelector(".feedback-data__score-table")
 	let validated = true;
 	let data;
-	for (const cell of document.querySelectorAll(".feedback-comments__member-comments")) {
+	for (const cell of
+		document.querySelectorAll(
+			".feedback-comments__member-comments"
+		)) {
 		data = cell.value;
 		if (data=="" || typeof data=="undefined") {
 			validated = false;
-			cell.parentElement.classList.add("feedback-comments__member-comments--invalid");
+			cell.parentElement.classList.add(
+				"feedback-comments__member-comments--invalid"
+			);
 		}
 	}
 	if (!validated) {
 		console.error("Incomplete comments");
-		document.getElementById("successful_submit").innerText = "Form submission ERROR.";
+		document.getElementById("successful_submit").innerText
+		= "Form submission ERROR.";
 	}
 	return validated;
 }
@@ -119,7 +125,9 @@ function collect_scores(table) {
  */
 function submit_form() {
 	let check_comments = validate_comments();
-	let check_scores = validate_scores_table(document.querySelector(".feedback-data__score-table"));
+	let check_scores = validate_scores_table(
+		document.querySelector(".feedback-data__score-table")
+	);
 	if (!check_scores || !check_comments) {
 		return;
 	}
