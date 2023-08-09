@@ -110,4 +110,32 @@ jQuery(function ($) {
 	 * @listens MouseEvent
 	 */
 	$(".team-list__add-cancel").on("click", hide_team_list__add_info);
+
+	$(".team-list__remove").on("click", event => {
+		const teamId = $(event.target).parents(".team-list__entry").data("id");
+		if (typeof teamId === "undefined") {
+			$("#server-error-dialog__msg").text("Failed to remove team.");
+			$("#server-error-dialog")[0].showModal();
+			return;
+		}
+
+		event.target.disabled = true;
+		fetch("/api/admin/team/remove", {
+			method: "POST",
+			body: JSON.stringify({id: teamId}),
+			headers: {
+				"Content-type": "application/json; charset=UTF-8"
+			}
+		}).then(res => {
+			if (res.ok && res.status == 200) {
+				$(event.target).parents("team-list__entry").remove();
+			} else {
+				$("#server-error-dialog__msg").text("Failed to remove team.");
+				$("#server-error-dialog")[0].showModal();
+				$("#server-error-dialog").one("close", () => {
+					event.target.disabled = false;
+				});
+			}
+		});
+	});
 });
