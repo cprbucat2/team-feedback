@@ -39,17 +39,20 @@
 			-->{{ .Members | fmtmembers }}</td>
 		</tr>
 		{{end}}
+	</tbody>
+	<tfoot>
 		<tr class="admin-list__entry team-list__add-info team-list__add-info--hidden">
 			<td><!--Checkbox--></td>
 			<td>
 				<input type="text" name="team-add-name" id="team-add-name" size="15" maxlength="255">
 			</td>
 			<td>
-				<input type="button" value="Add" class="team-list__add-control">
+				<input type="button" value="Add" class="team-list__add-confirm">
+				<input type="button" value="Cancel" class="team-list__add-cancel">
 			</td>
-			<td><!--Members--></td>
+			<td class="team-list__add-status"><!--Members--></td>
 		</tr>
-	</tbody>
+	</tfoot>
 </table>
 <input type="button" value="Add" class="team-add-btn">
 <input type="button" value="Remove (0 selected)" class="admin-remove-btn teams-remove-btn" disabled>

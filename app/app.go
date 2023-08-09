@@ -142,10 +142,16 @@ func main() {
 	router.GET("/admin/team", getAdminTeam)
 
 	router.POST("/api/submit", postUserSubmission)
+	router.POST("/api/admin/team/add", postAddTeam)
 
 	if err := router.Run("0.0.0.0:8080"); err != nil {
 		log.Fatal(err)
 	}
+}
+
+type team struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
 }
 
 type entry struct {
@@ -207,6 +213,32 @@ func getAdminTeam(c *gin.Context) {
 		"Title": "Team management",
 		"Teams": teams,
 	})
+}
+
+func postAddTeam(c *gin.Context) {
+	newTeam := team{}
+	if err := c.BindJSON(&newTeam); err != nil {
+		log.Println("postAddTeam:", err)
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	if result, err := db.Exec("insert into teams (name) values (?)", newTeam.Name); err != nil {
+		log.Println("postAddTeam", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	} else {
+		if id, err := result.LastInsertId(); err != nil {
+			log.Println("postAddTeam", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		} else {
+			newTeam.Id = id
+		}
+	}
+
+	log.Println("postAddTeam: inserted", newTeam.Id)
+	c.JSON(http.StatusCreated, newTeam)
 }
 
 func postUserSubmission(c *gin.Context) {
