@@ -148,6 +148,7 @@ func main() {
 
 	router.POST("/api/submit", postUserSubmission)
 	router.POST("/api/admin/team/add", postAddTeam)
+	router.POST("/api/admin/team/remove", postRemoveTeam)
 
 	if err := router.Run("0.0.0.0:8080"); err != nil {
 		log.Fatal(err)
@@ -249,6 +250,94 @@ func postAddTeam(c *gin.Context) {
 
 	log.Println("postAddTeam: inserted", newTeam.Id)
 	c.JSON(http.StatusCreated, newTeam)
+}
+
+/*
+postRemoveTeam is a POST route at /api/admin/team/remove. It takes a JSON
+array of team IDs as strings to remove. Every ID must reference a valid team
+with no members otherwise no data is changed.
+On success, returns status 200.
+On failure to bind JSON, returns status 400.
+404 indicates a team id did not exist. The transaction is canceled and first
+offending id is returned.
+409 indicates a team was not empty. The transaction is canceled and first
+offending id is returned.
+500 indicates some other server error.
+*/
+func postRemoveTeam(c *gin.Context) {
+	postData := []string{}
+	if err := c.BindJSON(&postData); err != nil {
+		log.Println("postRemoveTeam:", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "malformed request.",
+		})
+		return
+	}
+
+	delTeams := []int64{}
+	for i := range postData {
+		if id, err := strconv.ParseInt(postData[i], 10, 64); err != nil {
+			log.Println("postRemoveTeam:", err)
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+				"id":      postData[i],
+				"message": "invalid team",
+			})
+		} else {
+			delTeams = append(delTeams, id)
+		}
+	}
+
+	var count int64 = 0
+	tx, err := db.Begin()
+	if err != nil {
+		log.Println("postRemoveTeam:", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+
+	for _, id := range delTeams {
+		if result, err := tx.Exec("delete from teams where id = ?", id); err != nil {
+			log.Println("postRemoveTeam:", err)
+			if rollbackErr := tx.Rollback(); rollbackErr != nil {
+				log.Println("postRemoveTeam: failed to rollback:", rollbackErr)
+			}
+			if strings.Contains(err.Error(), "foreign key constraint") {
+				c.AbortWithStatusJSON(http.StatusConflict, gin.H{
+					"id":      id,
+					"message": "not empty",
+				})
+			} else {
+				c.AbortWithStatus(http.StatusInternalServerError)
+			}
+		} else {
+			if ct, err := result.RowsAffected(); err != nil {
+				log.Println("postRemoveTeam:", err)
+				c.AbortWithStatus(http.StatusInternalServerError)
+				return
+			} else if ct != 1 {
+				log.Println("postRemoveTeam: id not found:", id)
+				if rollbackErr := tx.Rollback(); rollbackErr != nil {
+					log.Println("postRemoveTeam: failed to rollback:", rollbackErr)
+				}
+				c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+					"id":      id,
+					"message": "not found",
+				})
+			} else {
+				log.Println("postRemoveTeam: going to remove team", id)
+				count += 1
+			}
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		log.Println("postRemoveTeam: failed to commit", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	log.Println("postRemoveTeam: commit transaction")
+	c.JSON(http.StatusOK, gin.H{
+		"message": "success",
+	})
 }
 
 func postUserSubmission(c *gin.Context) {
