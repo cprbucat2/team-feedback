@@ -118,7 +118,7 @@ jQuery(function ($) {
 	$(".team-list__add-cancel").on("click", hide_team_list__add_info);
 
 	/**
-	 * Execute a POST query to remove teams.
+	 * Execute a DELETE query to remove teams.
 	 * @param {string[]} teamIDs An array of team ids to remove.
 	 * @param {function(): void} success Executes on success after removing rows.
 	 * @param {function(): void} failure Executes on failure after the error
@@ -126,7 +126,7 @@ jQuery(function ($) {
 	 */
 	function removeTeams(teamIDs, success, failure) {
 		fetch("/api/admin/team/remove", {
-			method: "POST",
+			method: "DELETE",
 			body: JSON.stringify(teamIDs),
 			headers: {
 				"Content-type": "application/json; charset=UTF-8"

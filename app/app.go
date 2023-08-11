@@ -148,7 +148,7 @@ func main() {
 
 	router.POST("/api/submit", postUserSubmission)
 	router.POST("/api/admin/team/add", postAddTeam)
-	router.POST("/api/admin/team/remove", postRemoveTeam)
+	router.DELETE("/api/admin/team/remove", postRemoveTeam)
 
 	if err := router.Run("0.0.0.0:8080"); err != nil {
 		log.Fatal(err)
@@ -282,6 +282,7 @@ func postRemoveTeam(c *gin.Context) {
 				"id":      postData[i],
 				"message": "invalid team",
 			})
+			return
 		} else {
 			delTeams = append(delTeams, id)
 		}
@@ -292,6 +293,7 @@ func postRemoveTeam(c *gin.Context) {
 	if err != nil {
 		log.Println("postRemoveTeam:", err)
 		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
 
 	for _, id := range delTeams {
@@ -308,6 +310,7 @@ func postRemoveTeam(c *gin.Context) {
 			} else {
 				c.AbortWithStatus(http.StatusInternalServerError)
 			}
+			return
 		} else {
 			if ct, err := result.RowsAffected(); err != nil {
 				log.Println("postRemoveTeam:", err)
@@ -322,6 +325,7 @@ func postRemoveTeam(c *gin.Context) {
 					"id":      id,
 					"message": "not found",
 				})
+				return
 			} else {
 				log.Println("postRemoveTeam: going to remove team", id)
 				count += 1
