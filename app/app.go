@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/gin-contrib/multitemplate"
@@ -31,16 +32,20 @@ func pageTemplates() multitemplate.Renderer {
 		return x + 1
 	}
 
-	fmtmembers := func(members []string) string {
-		return strings.Join(members, ", ")
+	fmtmembers := func(members []member) string {
+		names := []string{}
+		for i := range members {
+			names = append(names, members[i].Name)
+		}
+		return strings.Join(names, ", ")
 	}
 
-	datafmtmembers := func(members []string) string {
-		for m := range members {
-			members[m] = strings.ReplaceAll(members[m], "\\", "\\\\")
-			members[m] = strings.ReplaceAll(members[m], ",", "\\,")
+	datafmtmembers := func(members []member) string {
+		ids := []string{}
+		for i := range members {
+			ids = append(ids, strconv.FormatInt(members[i].Id, 10))
 		}
-		return strings.Join(members, ",")
+		return strings.Join(ids, ",")
 	}
 
 	funcmap := template.FuncMap{
@@ -154,6 +159,11 @@ type team struct {
 	Name string `json:"name"`
 }
 
+type member struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+}
+
 type entry struct {
 	Name    string    `json:"name"`
 	Scores  []float64 `json:"scores"`
@@ -170,7 +180,7 @@ func getAdminTeam(c *gin.Context) {
 	type adminTeam struct {
 		Id      int64
 		Name    string
-		Members []string
+		Members []member
 	}
 
 	var teams []adminTeam
@@ -191,15 +201,15 @@ func getAdminTeam(c *gin.Context) {
 	}
 
 	for t := range teams {
-		if rows, err := db.Query("select name from users where team_id = ?", teams[t].Id); err != nil {
+		if rows, err := db.Query("select id, name from users where team_id = ?", teams[t].Id); err != nil {
 			log.Panicf("getAdminTeam: %v", err)
 		} else {
 			for rows.Next() {
-				var member string
-				if err := rows.Scan(&member); err != nil {
+				var m member
+				if err := rows.Scan(&m.Id, &m.Name); err != nil {
 					log.Panicf("getAdminTeam: %v", err)
 				} else {
-					teams[t].Members = append(teams[t].Members, member)
+					teams[t].Members = append(teams[t].Members, m)
 				}
 			}
 
