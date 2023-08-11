@@ -55,3 +55,11 @@
 .team-list__add-info--hidden {
 	display: none;
 }
+
+.team-list__add-status--error {
+	color: red;
+}
+
+.admin-list__entry--template {
+	display: none;
+}

@@ -7,25 +7,31 @@
 
 jQuery(function ($) {
 	/**
-	 * Listen to checkbox clicks and update remove button and head checkbox.
-	 * @listens MouseEvent
+	 * Update remove button and head checkbox.
 	 */
-	$(".admin-list__checkbox").on("click", () => {
-		const boxes = $(".admin-list__checkbox");
+	function recountCheckboxes() {
+		const boxes = $(".admin-list__checkbox")
+			.not(".admin-list__entry--template *");
 		const count = boxes.map((i, e) => e.checked).get()
 			.reduce((x, sum) => x + sum);
 		if (count === 0) {
-			$(".remove-users-btn").prop("disabled", true);
-			$(".user-list__head-checkbox").prop("checked", false);
-			$(".user-list__head-checkbox").prop("indeterminate", false);
+			$(".admin-remove-btn").prop("disabled", true);
+			$(".admin-list__head-checkbox").prop("checked", false);
+			$(".admin-list__head-checkbox").prop("indeterminate", false);
 		} else {
-			$(".remove-users-btn").prop("disabled", false);
-			$(".user-list__head-checkbox").prop("checked", count === boxes.length);
-			$(".user-list__head-checkbox")
+			$(".admin-remove-btn").prop("disabled", false);
+			$(".admin-list__head-checkbox").prop("checked", count === boxes.length);
+			$(".admin-list__head-checkbox")
 				.prop("indeterminate", count !== boxes.length);
 		}
 		$(".admin-remove-btn").prop("value", `Remove (${count} selected)`);
-	});
+	}
+
+	/**
+	 * Listen to checkbox clicks and update remove button and head checkbox.
+	 * @listens MouseEvent
+	 */
+	$(".admin-list__checkbox").on("click", recountCheckboxes);
 
 	/**
 	 * Update checkboxes based off the header checkbox.
@@ -37,7 +43,8 @@ jQuery(function ($) {
 			$(".admin-remove-btn").prop("disabled", true);
 			$(".admin-remove-btn").prop("value", `Remove (0 selected)`);
 		} else {
-			const boxes = $(".admin-list__checkbox");
+			const boxes = $(".admin-list__checkbox")
+				.not(".admin-list__entry--template *");
 			boxes.prop("checked", true);
 			$(".admin-remove-btn").prop("disabled", false);
 			$(".admin-remove-btn").prop("value", `Remove (${boxes.length} selected)`);
@@ -69,8 +76,10 @@ jQuery(function ($) {
 		const name = $("#team-add-name").val();
 
 		// Do not upload empty names.
-		if (name == "") {
+		if (typeof name === "undefined" || name === "") {
+			$(".team-list__add-status").addClass("team-list__add-status--error");
 			$(".team-list__add-status").text("Cannot add team with empty name");
+			return;
 		}
 
 		fetch("/api/admin/team/add", {
@@ -84,21 +93,18 @@ jQuery(function ($) {
 				return res.json();
 			} else throw new Error("Not ok.");
 		}).then(team => {
-			$(`<tr class="admin-list__entry team-list__entry" data-id="${team.id}">
-			<td>
-				<input type="checkbox" class="admin-list__checkbox">
-			</td>
-			<td class="team-list__name">${team.name}</td>
-			<td class="team-list__controls">
-				<input type="button" value="Modify" class="team-list__modify">
-				<input type="button" value="Remove" class="team-list__remove">
-				<a href="/admin/submissions/team/${team.id}"
-				class="team-list__submissions">Submissions</a>
-			</td>
-			<td class="team-list__members" data-members=""></td>
-		</tr>`).appendTo(".team-list tbody");
+			const row = $(".team-list__entry.admin-list__entry--template")
+				.clone(true);
+			row.removeClass("admin-list__entry--template");
+			row.data("id", team.id);
+			row.find(".team-list__name").text(team.name);
+			row.find(".team-list__submissions")
+				.attr("href", "/admin/submissions/team/" + team.id);
+			$(".team-list tbody").append(row);
+			recountCheckboxes();
 			hide_team_list__add_info();
 		}).catch(() => {
+			$(".team-list__add-status").addClass("team-list__add-status--error");
 			$(".team-list__add-status").text("Failed to add team.");
 		});
 	});
@@ -111,6 +117,57 @@ jQuery(function ($) {
 	 */
 	$(".team-list__add-cancel").on("click", hide_team_list__add_info);
 
+	/**
+	 * Execute a POST query to remove teams.
+	 * @param {string[]} teamIDs An array of team ids to remove.
+	 * @param {function(): void} success Executes on success after removing rows.
+	 * @param {function(): void} failure Executes on failure after the error
+	 * dialog is closed.
+	 */
+	function removeTeams(teamIDs, success, failure) {
+		fetch("/api/admin/team/remove", {
+			method: "POST",
+			body: JSON.stringify(teamIDs),
+			headers: {
+				"Content-type": "application/json; charset=UTF-8"
+			}
+		}).then(res => {
+			if (res.ok && res.status == 200) {
+				$(".team-list__entry").filter((_, e) =>
+					typeof $(e).data("id") !== "undefined" &&
+					teamIDs.includes($(e).data("id").toString())
+				).remove();
+				if (typeof success === "function") {
+					success();
+				}
+			}
+			return res.json();
+		}).then(json => {
+			if (typeof json.message === "string" && json.message === "success")
+				return;
+			let errorMsg = "Failed to remove team";
+			if (typeof json.id === "number") {
+				const teamName = $(".team-list__entry").filter(
+					(i, e) => $(e).data("id") &&
+					$(e).data("id").toString() === json.id.toString()
+				).find(".team-list__name").text();
+				errorMsg += " " + (teamName === "" ? json.id : teamName);
+			}
+			if (typeof json.message === "string") {
+				errorMsg += ": " + json.message;
+			} else {
+				errorMsg += ".";
+			}
+			$("#server-error-dialog__msg").text(errorMsg);
+			$("#server-error-dialog")[0].showModal();
+			$("#server-error-dialog").one("close", () => {
+				if (typeof failure === "function") {
+					failure();
+				}
+			});
+		});
+	}
+
 	$(".team-list__remove").on("click", event => {
 		const teamId = $(event.target).parents(".team-list__entry").data("id");
 		if (typeof teamId === "undefined") {
@@ -120,22 +177,20 @@ jQuery(function ($) {
 		}
 
 		event.target.disabled = true;
-		fetch("/api/admin/team/remove", {
-			method: "POST",
-			body: JSON.stringify({id: teamId}),
-			headers: {
-				"Content-type": "application/json; charset=UTF-8"
-			}
-		}).then(res => {
-			if (res.ok && res.status == 200) {
-				$(event.target).parents("team-list__entry").remove();
-			} else {
-				$("#server-error-dialog__msg").text("Failed to remove team.");
-				$("#server-error-dialog")[0].showModal();
-				$("#server-error-dialog").one("close", () => {
-					event.target.disabled = false;
-				});
-			}
+		removeTeams([teamId.toString()], recountCheckboxes, () => {
+			event.target.disabled = false;
+		});
+	});
+
+	$(".teams-remove-btn").on("click", () => {
+		const ids = $(".admin-list__checkbox:checked")
+			.parents(".admin-list__entry")
+			.map((_, e) => $(e).data("id").toString()).get();
+		removeTeams(ids, () => {
+			$(".teams-remove-btn").prop("value", "Remove (0 selected)");
+			$(".teams-remove-btn").prop("disabled", true);
+			$(".admin-list__head-checkbox").prop("checked", false);
+			$(".admin-list__head-checkbox").prop("indeterminate", false);
 		});
 	});
 });
