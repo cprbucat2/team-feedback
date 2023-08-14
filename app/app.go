@@ -15,6 +15,16 @@ import (
 
 var db *sql.DB
 
+func redirect(w http.ResponseWriter, req *http.Request) {
+	log.Print(req.Host)
+	req.URL.Host = req.Host[:len(req.Host)-3] + "443"
+	req.URL.Scheme = "https"
+	log.Print(req.URL.String())
+	http.Redirect(w, req,
+		req.URL.String(),
+		http.StatusMovedPermanently)
+}
+
 func pageTemplates() multitemplate.Renderer {
 	r := multitemplate.NewRenderer()
 	templates, err := filepath.Glob("www/templates/*.html")
@@ -41,6 +51,12 @@ func pageTemplates() multitemplate.Renderer {
 }
 
 func main() {
+	// redirect every http request to https
+	go func() {
+		err := http.ListenAndServe(":8080", http.HandlerFunc(redirect))
+		log.Fatal(err)
+	}()
+
 	log.SetPrefix("tf-server: ")
 
 	dbConfig := mysql.Config{
@@ -126,7 +142,7 @@ func main() {
 
 	router.POST("/api/submit", postUserSubmission)
 
-	if err := router.Run("0.0.0.0:8080"); err != nil {
+	if err := router.RunTLS("0.0.0.0:8443", "/etc/ssl/certs/cert.pem", "/etc/ssl/certs/key.pem"); err != nil {
 		log.Fatal(err)
 	}
 }
