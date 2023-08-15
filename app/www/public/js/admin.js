@@ -192,4 +192,80 @@ jQuery(function ($) {
 			$(".admin-list__head-checkbox").prop("indeterminate", false);
 		});
 	});
+
+	$(".team-list__modify").on("click", event => {
+		const row = $(event.target).parents(".team-list__entry");
+
+		const teamName = row.find(".team-list__name").text();
+		row.find(".team-list__name").text("");
+		row.find(".team-list__name").append(
+			`<input type="text" value="${teamName}" size="15" maxlength="255">`
+		);
+
+		row.find(".team-list__remove").hide();
+		row.find(".team-list__modify").prop("disabled", true);
+
+		function removeModifyControls() {
+			const newName = row.find(".team-list__name input[type=text]").val();
+			row.find(".team-list__name input[type=text]").remove();
+			row.find(".team-list__name").text(newName);
+			row.find(".team-list__member-remove").remove();
+			row.find(".team-list__modify-confirm").remove();
+			row.find(".team-list__modify-cancel").remove();
+			row.find(".team-list__remove").show();
+			row.find(".team-list__modify").prop("disabled", false);
+		}
+
+		row.find(".team-list__modify").after($(`<input type="button">`)
+			.val("Cancel").addClass("team-list__modify-cancel").on("click", () => {
+				row.find(".team-list__member").filter(":hidden").show();
+				row.find(".team-list__name input[type=text]").val(teamName);
+				removeModifyControls();
+			}));
+
+		$(event.target).after($(`<input type="button">`).val("Confirm")
+			.addClass("team-list__modify-confirm").on("click", () => {
+				const members = row.find(".team-list__member").not(":hidden")
+					.map((i, e) => {
+						return {
+							id: $(e).data("id"),
+							name: $(e).text()
+						};
+					}).get();
+
+				const team = {
+					id: row.data("id"),
+					name: row.find(".team-list__name input[type=text]").val(),
+					members
+				};
+
+				fetch("/api/admin/team/" + row.data("id"), {
+					method: "PUT",
+					body: JSON.stringify(team),
+					headers: {
+						"Content-type": "application/json; charset=UTF-8"
+					}
+				}).then(req => {
+					if (req.ok && req.status === 200) {
+						row.find(".team-list__member").filter(":hidden").remove();
+						removeModifyControls();
+					} else {
+						$("#server-error-dialog__msg")
+							.text(`Failed to modify team ${team.name}: server error.`);
+						$("#server-error-dialog")[0].showModal();
+					}
+				});
+
+			}));
+
+		row.find(".team-list__member")
+			.before($(`<a class="team-list__member-remove">[X]</a>`)
+				.on("click", ev => {
+					const mem = $(ev.target).next();
+					console.log(mem);
+					mem.hide();
+					$(ev.target).remove();
+				})
+			);
+	});
 });
