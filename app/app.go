@@ -131,8 +131,8 @@ func main() {
 	router.GET("/admin/team", getAdminTeam)
 
 	router.POST("/api/submit", postUserSubmission)
-	router.POST("/api/admin/team/add", postAddTeam)
-	router.DELETE("/api/admin/team/remove", postRemoveTeam)
+	router.POST("/api/admin/team", postAddTeam)
+	router.DELETE("/api/admin/teams", postRemoveTeam)
 
 	if err := router.Run("0.0.0.0:8080"); err != nil {
 		log.Fatal(err)

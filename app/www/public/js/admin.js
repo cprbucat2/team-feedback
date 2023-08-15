@@ -81,7 +81,7 @@ jQuery(function ($) {
 			return;
 		}
 
-		fetch("/api/admin/team/add", {
+		fetch("/api/admin/team", {
 			method: "POST",
 			body: JSON.stringify({name}),
 			headers: {
@@ -124,7 +124,7 @@ jQuery(function ($) {
 	 * dialog is closed.
 	 */
 	function removeTeams(teamIDs, success, failure) {
-		fetch("/api/admin/team/remove", {
+		fetch("/api/admin/teams", {
 			method: "DELETE",
 			body: JSON.stringify(teamIDs),
 			headers: {
@@ -239,7 +239,7 @@ jQuery(function ($) {
 					members
 				};
 
-				fetch("/api/admin/team/" + row.data("id"), {
+				fetch(`/api/admin/team/${team.id}`, {
 					method: "PUT",
 					body: JSON.stringify(team),
 					headers: {
