@@ -8,23 +8,23 @@
 <script src="/public/js/useradmin.js"></script>
 {{end}}
 {{define "nav"}}
-{{template "nav-admin" .}}
+{{template "nav-admin" "Users"}}
 {{end}}
 {{define "main"}}
-<p class="user-list-title">Users</h3>
-<table class="user-list">
+<p class="admin-list-title">Users</h3>
+<table class="admin-list user-list">
 	<thead>
-		<tr class="user-list__header">
-			<td><input type="checkbox" class="user-list__head-checkbox" /></td>
-			<td class="user-list__heading">Name</td>
-			<td class="user-list__heading">Controls</td>
+		<tr class="admin-list__header">
+			<td><input type="checkbox" class="admin-list__head-checkbox" /></td>
+			<td class="admin-list__heading">Name</td>
+			<td class="admin-list__heading">Controls</td>
 		</tr>
 	</thead>
 	<tbody>
 		{{range .Users}}
-		<tr class="user-list__entry">
+		<tr class="admin-list__entry user-list__entry">
 			<td>
-				<input type="checkbox" class="user-list__checkbox">
+				<input type="checkbox" class="admin-list__checkbox">
 			</td>
 			<td class="user-list__name">{{ .Name }}</td>
 			<td class="user-list__controls">
@@ -35,6 +35,6 @@
 		{{end}}
 	</tbody>
 </table>
-<input type="button" value="Add" class="add-user-btn">
-<input type="button" value="Remove (0 selected)" class="remove-users-btn" disabled>
+<input type="button" value="Add" class="user-add-btn">
+<input type="button" value="Remove (0 selected)" class="admin-remove-btn users-remove-btn" disabled>
 {{end}}
