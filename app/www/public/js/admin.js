@@ -10,10 +10,9 @@ jQuery(function ($) {
 	 * Update remove button and head checkbox.
 	 */
 	function recountCheckboxes() {
-		const boxes = $(".admin-list__checkbox")
+		const boxes = $(".admin-list__checkbox:checked")
 			.not(".admin-list__entry--template *");
-		const count = boxes.map((i, e) => e.checked).get()
-			.reduce((x, sum) => x + sum);
+		const count = boxes.length;
 		if (count === 0) {
 			$(".admin-remove-btn").prop("disabled", true);
 			$(".admin-list__head-checkbox").prop("checked", false);
