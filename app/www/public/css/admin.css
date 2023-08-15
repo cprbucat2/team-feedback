@@ -52,6 +52,10 @@
 	background-color:gainsboro;
 }
 
+.team-list__member:not(:last-child)::after {
+	content: ", ";
+}
+
 .team-list__add-info--hidden {
 	display: none;
 }

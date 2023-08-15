@@ -32,24 +32,8 @@ func pageTemplates() multitemplate.Renderer {
 		return x + 1
 	}
 
-	fmtmembers := func(members []member) string {
-		names := []string{}
-		for i := range members {
-			names = append(names, members[i].Name)
-		}
-		return strings.Join(names, ", ")
-	}
-
-	datafmtmembers := func(members []member) string {
-		ids := []string{}
-		for i := range members {
-			ids = append(ids, strconv.FormatInt(members[i].Id, 10))
-		}
-		return strings.Join(ids, ",")
-	}
-
 	funcmap := template.FuncMap{
-		"inc": incFunc, "fmtmembers": fmtmembers, "datafmtmembers": datafmtmembers,
+		"inc": incFunc,
 	}
 
 	for _, page := range pages {

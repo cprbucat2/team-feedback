@@ -34,9 +34,11 @@
 				<a href="/admin/submissions/team/{{ .Id }}"
 				class="team-list__submissions">Submissions</a>
 			</td>
-			<td class="team-list__members"
-			data-members="{{ .Members | datafmtmembers }}"><!--
-			-->{{ .Members | fmtmembers }}</td>
+			<td class="team-list__members">
+			{{ range .Members }}
+			<span class="team-list__member" data-id="{{ .Id }}">{{ .Name }}</span>
+			{{ end }}
+			</td>
 		</tr>
 		{{end}}
 	</tbody>
@@ -51,7 +53,7 @@
 				<input type="button" value="Remove" class="team-list__remove">
 				<a href="" class="team-list__submissions">Submissions</a>
 			</td>
-			<td class="team-list__members" data-members=""></td>
+			<td class="team-list__members"></td>
 		</tr>
 		<tr class="admin-list__entry team-list__add-info team-list__add-info--hidden">
 			<td><!--Checkbox--></td>
