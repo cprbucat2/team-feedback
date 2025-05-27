@@ -133,6 +133,7 @@ func main() {
 	router.POST("/api/submit", postUserSubmission)
 	router.POST("/api/admin/team", postAddTeam)
 	router.DELETE("/api/admin/teams", postRemoveTeam)
+	router.PUT("/api/admin/team/:id", putTeam)
 
 	if err := router.Run("0.0.0.0:8080"); err != nil {
 		log.Fatal(err)
@@ -326,6 +327,83 @@ func postRemoveTeam(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "success",
 	})
+}
+
+func putTeam(c *gin.Context) {
+	colonId := c.Param("id")
+	id, err := strconv.ParseInt(colonId, 10, 64)
+	if err != nil {
+		log.Println("putTeam: failed to get id.", err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	var reqTeam struct {
+		Id      int64    `json:"id"`
+		Members []member `json:"members"`
+		Name    string   `json:"name"`
+	}
+
+	if err := c.BindJSON(&reqTeam); err != nil {
+		log.Println("putTeam: failed to bind JSON:", err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	if reqTeam.Id != id {
+		log.Println("putTeam: wrong id.", reqTeam.Id, "!=", id)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	tx, err := db.Begin()
+	if err != nil {
+		log.Println("putTeam:", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	if result, err := tx.Exec("update teams set name = ? where id = ?",
+		reqTeam.Name, reqTeam.Id); err != nil {
+		log.Println("putTeam:", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	} else {
+		if n, err := result.RowsAffected(); err != nil {
+			log.Println("putTeam:", err)
+			c.AbortWithStatus(http.StatusInternalServerError)
+		} else if n == 0 {
+			c.AbortWithStatus(http.StatusNotFound)
+		}
+	}
+
+	curMems := map[member]bool{}
+	if rows, err := tx.Query("select id, name from users where team_id = ?", id); err != nil {
+		log.Println("putTeam:", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	} else {
+		for rows.Next() {
+			m := member{}
+			if err := rows.Scan(&m.Id, &m.Name); err != nil {
+				log.Println("putTeam:", err)
+				c.AbortWithStatus(http.StatusInternalServerError)
+				return
+			}
+			curMems[m] = true
+		}
+	}
+
+	newMems := []member{}
+	for _, m := range reqTeam.Members {
+		if _, ok := curMems[m]; !ok {
+			newMems = append(newMems, m)
+		}
+	}
+
+	oldMems
+
+	c.Status(http.StatusOK)
 }
 
 func postUserSubmission(c *gin.Context) {
