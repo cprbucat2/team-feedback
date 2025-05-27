@@ -43,3 +43,13 @@ create table entries (
 	index (member),
 	foreign key (member) references users (id)
 );
+
+insert into teams (name) values ("Team Feedback");
+insert into users (name, team_id) values ("Aiden Woodruff", 2);
+insert into users (name, team_id) values ("Aidan Hoover", 2);
+insert into teams (name) values ("The Usual Suspects");
+insert into users (name, team_id) values ("Keaton", 3);
+insert into users (name, team_id) values ("MacManus", 3);
+insert into users (name, team_id) values ("Fenster", 3);
+insert into users (name, team_id) values ("Hockney", 3);
+insert into users (name, team_id) values ("Verbal", 3);

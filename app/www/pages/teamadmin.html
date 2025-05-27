@@ -1,0 +1,80 @@
+{{define "resources"}}
+<script
+	src="https://code.jquery.com/jquery-3.7.0.slim.min.js"
+	integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE="
+	crossorigin="anonymous"
+></script>
+<link rel="stylesheet" href="/public/css/admin.css" />
+<script src="/public/js/admin.js"></script>
+{{end}}
+{{define "nav"}}
+{{template "nav-admin" "Teams"}}
+{{end}}
+{{define "main"}}
+<p class="admin-list-title">Teams</p>
+<table class="admin-list team-list">
+	<thead>
+		<tr class="admin-list__header">
+			<td><input type="checkbox" class="admin-list__head-checkbox" /></td>
+			<td class="admin-list__heading">Name</td>
+			<td class="admin-list__heading">Controls</td>
+			<td class="admin-list__heading">Members</td>
+		</tr>
+	</thead>
+	<tbody>
+		{{range .Teams}}
+		<tr class="admin-list__entry team-list__entry" data-id="{{ .Id }}">
+			<td>
+				<input type="checkbox" class="admin-list__checkbox">
+			</td>
+			<td class="team-list__name">{{ .Name }}</td>
+			<td class="team-list__controls">
+				<input type="button" value="Modify" class="team-list__modify">
+				<input type="button" value="Remove" class="team-list__remove">
+				<a href="/admin/submissions/team/{{ .Id }}"
+				class="team-list__submissions">Submissions</a>
+			</td>
+			<td class="team-list__members">
+			{{ range .Members }}
+			<span class="team-list__member" data-id="{{ .Id }}">{{ .Name }}</span>
+			{{ end }}
+			</td>
+		</tr>
+		{{end}}
+	</tbody>
+	<tfoot>
+		<tr class="admin-list__entry team-list__entry admin-list__entry--template">
+			<td>
+				<input type="checkbox" class="admin-list__checkbox">
+			</td>
+			<td class="team-list__name"></td>
+			<td class="team-list__controls">
+				<input type="button" value="Modify" class="team-list__modify">
+				<input type="button" value="Remove" class="team-list__remove">
+				<a href="" class="team-list__submissions">Submissions</a>
+			</td>
+			<td class="team-list__members"></td>
+		</tr>
+		<tr class="admin-list__entry team-list__add-info team-list__add-info--hidden">
+			<td><!--Checkbox--></td>
+			<td>
+				<input type="text" name="team-add-name" id="team-add-name" size="15" maxlength="255">
+			</td>
+			<td>
+				<input type="button" value="Add" class="team-list__add-confirm">
+				<input type="button" value="Cancel" class="team-list__add-cancel">
+			</td>
+			<td class="team-list__add-status"><!--Members--></td>
+		</tr>
+	</tfoot>
+</table>
+<dialog id="server-error-dialog">
+	<form>
+		<p id="server-error-dialog__msg">Server error.</p>
+		<input type="submit" formmethod="dialog" value="Close">
+	</form>
+</dialog>
+<input type="button" value="Add" class="team-add-btn">
+<input type="button" value="Remove (0 selected)" class="admin-remove-btn teams-remove-btn" disabled>
+<input type="button" value="Randomize teams" class="teams-randomize-btn" disabled>
+{{end}}

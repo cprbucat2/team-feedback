@@ -18,31 +18,58 @@
 	padding-left: 0px;
 }
 
-.user-list-title {
+.admin-list-title {
 	font-size: 2em;
 	margin-top: 0.5em;
 	margin-bottom: 0.25em;
 }
 
-.user-list {
+.admin-list {
 	margin-bottom: 10px;
 	border: 1px solid black;
 	border-collapse: collapse;
 }
 
-.user-list__header {
+.admin-list__header {
 	font-weight: bold;
 	text-align: center;
 }
 
-.user-list td {
+.admin-list td {
 	border: 1px solid black;
 }
 
-.user-list tbody td {
+.admin-list td {
 	padding: 5px;
 }
 
-.user-list .user-list__entry:nth-child(odd) {
+.admin-list thead td {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.admin-list tbody .admin-list__entry:nth-child(odd) {
 	background-color:gainsboro;
+}
+
+.team-list__member:not(:last-child)::after {
+	content: ", ";
+}
+
+.team-list__member-remove {
+	color: red;
+	padding: 0 1pt;
+	cursor: pointer;
+}
+
+.team-list__add-info--hidden {
+	display: none;
+}
+
+.team-list__add-status--error {
+	color: red;
+}
+
+.admin-list__entry--template {
+	display: none;
 }
